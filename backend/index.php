@@ -1,21 +1,40 @@
 <?php
+
+// =========================
+// CORS DEFINITIVO
+// =========================
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Content-Type: application/json");
+header("Content-Type: application/json; charset=UTF-8");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
+// =========================
+// DATABASE
+// =========================
 require_once '../config/database.php';
 
+// =========================
+// ROUTER CORRECTO PARA RENDER
+// =========================
 $request_method = $_SERVER['REQUEST_METHOD'];
-$request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = explode('/', trim($request_uri, '/'));
-$endpoint = end($uri);
 
+$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+// Quitar /api si existe
+$path = str_replace('/api', '', $path);
+$path = trim($path, '/');
+
+// Ahora el endpoint real
+$endpoint = $path;
+
+// =========================
+// HELPERS
+// =========================
 function getInputData() {
     return json_decode(file_get_contents("php://input"), true);
 }
@@ -26,8 +45,9 @@ function sendResponse($status, $data) {
     exit();
 }
 
-/* ================= JWT ================= */
-
+// =========================
+// JWT
+// =========================
 function createToken($user) {
     $secret_key = 'tu_clave_secreta_barbados_2024';
 
@@ -70,20 +90,18 @@ function verifyToken() {
 
     $decoded_payload = json_decode(base64_decode($payload), true);
 
-    if (!$decoded_payload || !isset($decoded_payload['id'])) {
-        sendResponse(401, ["error" => "Invalid token payload"]);
-    }
-
-    if ($decoded_payload['exp'] < time()) {
-        sendResponse(401, ["error" => "Token expired"]);
+    if (!$decoded_payload || $decoded_payload['exp'] < time()) {
+        sendResponse(401, ["error" => "Token invalid or expired"]);
     }
 
     return $decoded_payload;
 }
 
-/* ================= AUTH ================= */
-
+// =========================
+// AUTH
+// =========================
 if ($endpoint === 'register' && $request_method === 'POST') {
+
     $data = getInputData();
 
     if (empty($data['name']) || empty($data['email']) || empty($data['password'])) {
@@ -103,12 +121,10 @@ if ($endpoint === 'register' && $request_method === 'POST') {
 
         $hashed_password = password_hash($data['password'], PASSWORD_BCRYPT);
 
-        $query = $conn->prepare("INSERT INTO users (name, email, password, phone, role) VALUES (:name, :email, :password, :phone, 'client')");
+        $query = $conn->prepare("INSERT INTO users (name, email, password, role) VALUES (:name, :email, :password, 'client')");
         $query->bindParam(":name", $data['name']);
         $query->bindParam(":email", $data['email']);
         $query->bindParam(":password", $hashed_password);
-        $phone = $data['phone'] ?? '';
-        $query->bindParam(":phone", $phone);
         $query->execute();
 
         $user_id = $conn->lastInsertId();
@@ -122,7 +138,7 @@ if ($endpoint === 'register' && $request_method === 'POST') {
 
         $token = createToken($user);
 
-        sendResponse(201, ['message' => 'User registered successfully', 'token' => $token, 'user' => $user]);
+        sendResponse(201, ['token' => $token, 'user' => $user]);
 
     } catch(PDOException $e) {
         sendResponse(500, ["error" => $e->getMessage()]);
@@ -130,6 +146,7 @@ if ($endpoint === 'register' && $request_method === 'POST') {
 }
 
 if ($endpoint === 'login' && $request_method === 'POST') {
+
     $data = getInputData();
 
     if (empty($data['email']) || empty($data['password'])) {
@@ -153,73 +170,24 @@ if ($endpoint === 'login' && $request_method === 'POST') {
 
         $token = createToken($user);
 
-        sendResponse(200, ['message' => 'Login successful', 'token' => $token, 'user' => $user]);
+        sendResponse(200, ['token' => $token, 'user' => $user]);
 
     } catch(PDOException $e) {
         sendResponse(500, ["error" => $e->getMessage()]);
     }
 }
 
-/* ================= SERVICES ================= */
-
-if ($endpoint === 'services' && $request_method === 'GET') {
-    try {
-        global $conn;
-        $services = $conn->query("SELECT * FROM services ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
-        sendResponse(200, $services);
-    } catch(PDOException $e) {
-        sendResponse(500, ["error" => $e->getMessage()]);
-    }
-}
-
-/* ================= PRODUCTS ================= */
-
-if ($endpoint === 'products' && $request_method === 'GET') {
-    try {
-        global $conn;
-        $products = $conn->query("SELECT * FROM products ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
-        sendResponse(200, $products);
-    } catch(PDOException $e) {
-        sendResponse(500, ["error" => $e->getMessage()]);
-    }
-}
-
-if ($endpoint === 'products' && $request_method === 'POST') {
-    $payload = verifyToken();
-
-    if ($payload['role'] !== 'admin') {
-        sendResponse(403, ["error" => "Unauthorized"]);
-    }
-
-    $data = getInputData();
-
-    try {
-        global $conn;
-
-        $query = $conn->prepare("INSERT INTO products (name, description, price, stock, category) VALUES (:name, :description, :price, :stock, :category)");
-        $query->bindParam(":name", $data['name']);
-        $query->bindParam(":description", $data['description']);
-        $query->bindParam(":price", $data['price']);
-        $query->bindParam(":stock", $data['stock']);
-        $query->bindParam(":category", $data['category']);
-        $query->execute();
-
-        sendResponse(201, ['message' => 'Product created', 'id' => $conn->lastInsertId()]);
-
-    } catch(PDOException $e) {
-        sendResponse(500, ["error" => $e->getMessage()]);
-    }
-}
-
-/* ================= PROFILE ================= */
-
+// =========================
+// PROFILE
+// =========================
 if ($endpoint === 'profile' && $request_method === 'GET') {
+
     $payload = verifyToken();
 
     try {
         global $conn;
 
-        $query = $conn->prepare("SELECT id, name, email, phone, avatar, role FROM users WHERE id = :id");
+        $query = $conn->prepare("SELECT id, name, email, role FROM users WHERE id = :id");
         $query->bindParam(":id", $payload['id']);
         $query->execute();
 
@@ -232,7 +200,7 @@ if ($endpoint === 'profile' && $request_method === 'GET') {
     }
 }
 
-/* ================= FALLBACK ================= */
-
+// =========================
+// FALLBACK
+// =========================
 sendResponse(404, ["error" => "Endpoint not found"]);
-?>
