@@ -30,8 +30,6 @@ class Database {
 
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            echo "🔥 Conectado a Neon 🔥";
-
         } catch(PDOException $exception) {
             die(json_encode([
                 "error" => "Database connection failed",
