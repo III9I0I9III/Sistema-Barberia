@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-RUN docker-php-ext-install pdo pdo_pgsql pgsql
+RUN docker-php-ext-install pdo_pgsql pgsql
 
 COPY . /var/www/html/
 
