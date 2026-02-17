@@ -1,13 +1,13 @@
 <?php
 
 // =========================
-// MOSTRAR ERRORES (QUÍTALO EN PRODUCCIÓN SI QUIERES)
+// MOSTRAR ERRORES (SOLO DESARROLLO)
 // =========================
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // =========================
-// CORS DEFINITIVO
+// CORS
 // =========================
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -49,13 +49,29 @@ function sendResponse($status, $data) {
 }
 
 // =========================
+// BASE64 URL SAFE
+// =========================
+function base64url_encode($data) {
+    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+}
+
+function base64url_decode($data) {
+    return base64_decode(strtr($data, '-_', '+/'));
+}
+
+// =========================
 // JWT
 // =========================
 function createToken($user) {
-    $secret_key = 'tu_clave_secreta_barbados_2024';
 
-    $header = base64_encode(json_encode(['typ' => 'JWT', 'alg' => 'HS256']));
-    $payload = base64_encode(json_encode([
+    $secret_key = getenv('JWT_SECRET') ?: 'tu_clave_secreta_segura_2026';
+
+    $header = base64url_encode(json_encode([
+        'typ' => 'JWT',
+        'alg' => 'HS256'
+    ]));
+
+    $payload = base64url_encode(json_encode([
         'id' => $user['id'],
         'email' => $user['email'],
         'role' => $user['role'],
@@ -63,38 +79,44 @@ function createToken($user) {
         'exp' => time() + (60 * 60 * 24)
     ]));
 
-    $signature = hash_hmac('sha256', "$header.$payload", $secret_key);
+    $signature = base64url_encode(
+        hash_hmac('sha256', "$header.$payload", $secret_key, true)
+    );
 
     return "$header.$payload.$signature";
 }
 
 function verifyToken() {
-    $headers = getallheaders();
+
+    $secret_key = getenv('JWT_SECRET') ?: 'tu_clave_secreta_segura_2026';
+
+    $headers = function_exists('getallheaders') ? getallheaders() : [];
 
     if (!isset($headers['Authorization'])) {
         sendResponse(401, ["error" => "No token provided"]);
     }
 
     $token = str_replace('Bearer ', '', $headers['Authorization']);
-    $secret_key = 'tu_clave_secreta_barbados_2024';
-
     $parts = explode('.', $token);
+
     if (count($parts) !== 3) {
         sendResponse(401, ["error" => "Invalid token format"]);
     }
 
     list($header, $payload, $signature) = $parts;
 
-    $valid_signature = hash_hmac('sha256', "$header.$payload", $secret_key);
+    $valid_signature = base64url_encode(
+        hash_hmac('sha256', "$header.$payload", $secret_key, true)
+    );
 
     if (!hash_equals($valid_signature, $signature)) {
         sendResponse(401, ["error" => "Invalid token signature"]);
     }
 
-    $decoded_payload = json_decode(base64_decode($payload), true);
+    $decoded_payload = json_decode(base64url_decode($payload), true);
 
     if (!$decoded_payload || $decoded_payload['exp'] < time()) {
-        sendResponse(401, ["error" => "Token invalid or expired"]);
+        sendResponse(401, ["error" => "Token expired"]);
     }
 
     return $decoded_payload;
@@ -115,8 +137,7 @@ if ($endpoint === 'register' && $request_method === 'POST') {
         global $conn;
 
         $check = $conn->prepare("SELECT id FROM users WHERE email = :email");
-        $check->bindParam(":email", $data['email']);
-        $check->execute();
+        $check->execute(['email' => $data['email']]);
 
         if ($check->rowCount() > 0) {
             sendResponse(400, ["error" => "Email already exists"]);
@@ -124,13 +145,19 @@ if ($endpoint === 'register' && $request_method === 'POST') {
 
         $hashed_password = password_hash($data['password'], PASSWORD_BCRYPT);
 
-        $query = $conn->prepare("INSERT INTO users (name, email, password, role) VALUES (:name, :email, :password, 'client')");
-        $query->bindParam(":name", $data['name']);
-        $query->bindParam(":email", $data['email']);
-        $query->bindParam(":password", $hashed_password);
-        $query->execute();
+        $query = $conn->prepare("
+            INSERT INTO users (name, email, password, role)
+            VALUES (:name, :email, :password, 'client')
+            RETURNING id
+        ");
 
-        $user_id = $conn->lastInsertId();
+        $query->execute([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $hashed_password
+        ]);
+
+        $user_id = $query->fetchColumn();
 
         $user = [
             'id' => $user_id,
@@ -167,8 +194,7 @@ if ($endpoint === 'login' && $request_method === 'POST') {
         global $conn;
 
         $query = $conn->prepare("SELECT * FROM users WHERE email = :email");
-        $query->bindParam(":email", $data['email']);
-        $query->execute();
+        $query->execute(['email' => $data['email']]);
 
         $user = $query->fetch(PDO::FETCH_ASSOC);
 
@@ -201,10 +227,13 @@ if ($endpoint === 'profile' && $request_method === 'GET') {
     try {
         global $conn;
 
-        $query = $conn->prepare("SELECT id, name, email, role FROM users WHERE id = :id");
-        $query->bindParam(":id", $payload['id']);
-        $query->execute();
+        $query = $conn->prepare("
+            SELECT id, name, email, role
+            FROM users
+            WHERE id = :id
+        ");
 
+        $query->execute(['id' => $payload['id']]);
         $user = $query->fetch(PDO::FETCH_ASSOC);
 
         sendResponse(200, $user);
@@ -215,6 +244,6 @@ if ($endpoint === 'profile' && $request_method === 'GET') {
 }
 
 // =========================
-// FALLBACK
+// NOT FOUND
 // =========================
 sendResponse(404, ["error" => "Endpoint not found"]);
