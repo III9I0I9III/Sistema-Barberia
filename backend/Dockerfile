@@ -6,7 +6,10 @@ RUN apt-get update && apt-get install -y libpq-dev \
 # Activar mod_rewrite
 RUN a2enmod rewrite
 
-# Copiar solo backend al root de Apache
+# Permitir .htaccess
+RUN sed -i '/<Directory \/var\/www\/>/,/AllowOverride None/s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+
+# Copiar backend como raíz
 COPY backend/ /var/www/html/
 
 EXPOSE 80
