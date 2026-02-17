@@ -1,39 +1,47 @@
 <?php
 
-// Solo enviar headers si no estamos en CLI
-if (php_sapi_name() !== 'cli') {
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-    header("Access-Control-Allow-Headers: Content-Type, Authorization");
-    header("Content-Type: application/json");
-
-    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        http_response_code(200);
-        exit();
-    }
-}
-
 class Database {
-    private $host = 'localhost';
-    private $port = '5432';
-    private $db_name = 'barberia_db';
-    private $username = 'postgres';
-    private $password = 'password'; // Cambia por tu contraseña real
+
+    private $host;
+    private $port;
+    private $db_name;
+    private $username;
+    private $password;
+
     public $conn;
 
+    public function __construct() {
+        $this->host = getenv("DB_HOST");
+        $this->port = getenv("DB_PORT");
+        $this->db_name = getenv("DB_NAME");
+        $this->username = getenv("DB_USER");
+        $this->password = getenv("DB_PASSWORD");
+    }
+
     public function getConnection() {
+
         $this->conn = null;
+
         try {
             $this->conn = new PDO(
-                "pgsql:host={$this->host};port={$this->port};dbname={$this->db_name}",
+                "pgsql:host={$this->host};port={$this->port};dbname={$this->db_name};sslmode=require",
                 $this->username,
                 $this->password
             );
+
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "Conectado a PostgreSQL\n";
+
+            echo "🔥 Conectado a Neon 🔥";
+
         } catch(PDOException $exception) {
-            echo "Error de conexión: " . $exception->getMessage() . "\n";
+
+            die(json_encode([
+                "error" => "Database connection failed",
+                "details" => $exception->getMessage()
+            ]));
+
         }
+
         return $this->conn;
     }
 }
