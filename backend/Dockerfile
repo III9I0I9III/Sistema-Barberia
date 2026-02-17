@@ -1,13 +1,18 @@
 FROM php:8.2-apache
 
+# Instalar PostgreSQL driver
 RUN apt-get update && apt-get install -y libpq-dev \
     && docker-php-ext-install pdo_pgsql pgsql
 
-# Hacer que Apache escuche en el puerto que Render asigna
-RUN sed -i 's/Listen 80/Listen ${PORT}/' /etc/apache2/ports.conf
+# Activar mod_rewrite
+RUN a2enmod rewrite
 
-ENV APACHE_DOCUMENT_ROOT /var/www/html
+# Permitir que .htaccess funcione
+RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
-COPY . /var/www/html/
+# Copiar archivos
+COPY backend/ /var/www/html/
 
-CMD ["sh", "-c", "apache2-foreground"]
+EXPOSE 80
+
+CMD ["apache2-foreground"]
