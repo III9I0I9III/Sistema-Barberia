@@ -1,6 +1,12 @@
 <?php
 
 // =========================
+// MOSTRAR ERRORES (QUÍTALO EN PRODUCCIÓN SI QUIERES)
+// =========================
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// =========================
 // CORS DEFINITIVO
 // =========================
 header("Access-Control-Allow-Origin: *");
@@ -16,20 +22,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // =========================
 // DATABASE
 // =========================
-require_once '../config/database.php';
+require_once 'config/database.php';
 
 // =========================
-// ROUTER CORRECTO PARA RENDER
+// ROUTER
 // =========================
 $request_method = $_SERVER['REQUEST_METHOD'];
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-// Quitar /api si existe
 $path = str_replace('/api', '', $path);
 $path = trim($path, '/');
 
-// Ahora el endpoint real
 $endpoint = $path;
 
 // =========================
@@ -98,7 +101,7 @@ function verifyToken() {
 }
 
 // =========================
-// AUTH
+// REGISTER
 // =========================
 if ($endpoint === 'register' && $request_method === 'POST') {
 
@@ -138,13 +141,20 @@ if ($endpoint === 'register' && $request_method === 'POST') {
 
         $token = createToken($user);
 
-        sendResponse(201, ['token' => $token, 'user' => $user]);
+        sendResponse(201, [
+            'message' => 'User registered successfully',
+            'token' => $token,
+            'user' => $user
+        ]);
 
     } catch(PDOException $e) {
         sendResponse(500, ["error" => $e->getMessage()]);
     }
 }
 
+// =========================
+// LOGIN
+// =========================
 if ($endpoint === 'login' && $request_method === 'POST') {
 
     $data = getInputData();
@@ -170,7 +180,11 @@ if ($endpoint === 'login' && $request_method === 'POST') {
 
         $token = createToken($user);
 
-        sendResponse(200, ['token' => $token, 'user' => $user]);
+        sendResponse(200, [
+            'message' => 'Login successful',
+            'token' => $token,
+            'user' => $user
+        ]);
 
     } catch(PDOException $e) {
         sendResponse(500, ["error" => $e->getMessage()]);
