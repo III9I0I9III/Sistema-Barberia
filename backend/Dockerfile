@@ -3,13 +3,9 @@ FROM php:8.2-apache
 RUN apt-get update && apt-get install -y libpq-dev \
     && docker-php-ext-install pdo_pgsql pgsql
 
-# Activar mod_rewrite
-RUN a2enmod rewrite
+# Cambiar Apache para que escuche en el puerto dinámico de Render
+RUN sed -i 's/80/${PORT}/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 
-# Permitir .htaccess
-RUN sed -i '/<Directory \/var\/www\/>/,/AllowOverride None/s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+COPY . /var/www/html/
 
-# Copiar backend como raíz
-COPY backend/ /var/www/html/
-
-EXPOSE 80
+EXPOSE ${PORT}
