@@ -19,7 +19,6 @@ class Database {
     }
 
     public function getConnection() {
-
         $this->conn = null;
 
         try {
@@ -34,12 +33,10 @@ class Database {
             echo "🔥 Conectado a Neon 🔥";
 
         } catch(PDOException $exception) {
-
             die(json_encode([
                 "error" => "Database connection failed",
                 "details" => $exception->getMessage()
             ]));
-
         }
 
         return $this->conn;
