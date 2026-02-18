@@ -4,7 +4,7 @@ require_once __DIR__ . '/../core/middleware.php';
 
 $userData = requireAuth();
 
-if ($userData['role'] !== 'admin') {
+if (($userData['role'] ?? '') !== 'admin') {
     http_response_code(403);
     echo json_encode(["error" => "Access denied"]);
     exit;
@@ -18,6 +18,8 @@ $totalUsers = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
 $totalBarbers = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'barber'")->fetchColumn();
 $totalBookings = $pdo->query("SELECT COUNT(*) FROM bookings")->fetchColumn();
 $totalProducts = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
+
+// Si usas status = 'completed' y bookings.service_id existe:
 $totalRevenue = $pdo->query("
     SELECT COALESCE(SUM(s.price),0)
     FROM bookings b

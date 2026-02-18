@@ -6,13 +6,16 @@ $userData = requireAuth();
 $method = $_SERVER['REQUEST_METHOD'];
 $input = json_decode(file_get_contents("php://input"), true);
 
-$uri = explode("/", trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), "/"));
-$id = is_numeric(end($uri)) ? end($uri) : null;
+// ID (preferimos el que manda index.php)
+$id = $_GET['id'] ?? null;
+if (!$id) {
+    $uri = explode("/", trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), "/"));
+    $id = is_numeric(end($uri)) ? (int) end($uri) : null;
+}
 
 /* =========================
         GET BOOKINGS
 ========================= */
-
 if ($method === 'GET') {
 
     if ($userData['role'] === 'admin') {
@@ -31,7 +34,6 @@ if ($method === 'GET') {
 /* =========================
         CREATE BOOKING
 ========================= */
-
 if ($method === 'POST') {
 
     $barberId = $input['barber_id'] ?? null;
@@ -51,14 +53,7 @@ if ($method === 'POST') {
         RETURNING *
     ");
 
-    $stmt->execute([
-        $userData['id'],
-        $barberId,
-        $serviceId,
-        $date,
-        $time
-    ]);
-
+    $stmt->execute([$userData['id'], $barberId, $serviceId, $date, $time]);
     $booking = $stmt->fetch();
 
     echo json_encode([
@@ -71,7 +66,6 @@ if ($method === 'POST') {
 /* =========================
         UPDATE BOOKING STATUS
 ========================= */
-
 if ($method === 'PUT' && $id) {
 
     if (!in_array($userData['role'], ['admin', 'barber'])) {
@@ -94,7 +88,6 @@ if ($method === 'PUT' && $id) {
         WHERE id = ?
         RETURNING *
     ");
-
     $stmt->execute([$status, $id]);
     $booking = $stmt->fetch();
 
@@ -108,7 +101,6 @@ if ($method === 'PUT' && $id) {
 /* =========================
         DELETE BOOKING
 ========================= */
-
 if ($method === 'DELETE' && $id) {
 
     if ($userData['role'] !== 'admin') {

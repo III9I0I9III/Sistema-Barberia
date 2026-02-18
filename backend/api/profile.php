@@ -9,7 +9,6 @@ $input = json_decode(file_get_contents("php://input"), true);
 /* =========================
         GET PROFILE
 ========================= */
-
 if ($method === 'GET' && str_contains($_SERVER['REQUEST_URI'], 'profile')) {
 
     $stmt = $pdo->prepare("
@@ -27,7 +26,6 @@ if ($method === 'GET' && str_contains($_SERVER['REQUEST_URI'], 'profile')) {
 /* =========================
         UPDATE PROFILE
 ========================= */
-
 if ($method === 'PUT' && str_contains($_SERVER['REQUEST_URI'], 'profile')) {
 
     $name = $input['name'] ?? null;
@@ -52,7 +50,6 @@ if ($method === 'PUT' && str_contains($_SERVER['REQUEST_URI'], 'profile')) {
 /* =========================
         CHANGE PASSWORD
 ========================= */
-
 if ($method === 'POST' && str_contains($_SERVER['REQUEST_URI'], 'change-password')) {
 
     $currentPassword = $input['current_password'] ?? null;
@@ -68,7 +65,7 @@ if ($method === 'POST' && str_contains($_SERVER['REQUEST_URI'], 'change-password
     $stmt->execute([$userData['id']]);
     $user = $stmt->fetch();
 
-    if (!password_verify($currentPassword, $user['password'])) {
+    if (!$user || !password_verify($currentPassword, $user['password'])) {
         http_response_code(401);
         echo json_encode(["error" => "Current password incorrect"]);
         exit;
@@ -86,7 +83,6 @@ if ($method === 'POST' && str_contains($_SERVER['REQUEST_URI'], 'change-password
 /* =========================
         DELETE ACCOUNT
 ========================= */
-
 if ($method === 'DELETE' && str_contains($_SERVER['REQUEST_URI'], 'delete-account')) {
 
     $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");

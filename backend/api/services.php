@@ -2,19 +2,18 @@
 
 require_once __DIR__ . '/../core/middleware.php';
 
-$userData = requireAuth();
 $method = $_SERVER['REQUEST_METHOD'];
-$input = json_decode(file_get_contents("php://input"), true);
+$input  = json_decode(file_get_contents("php://input"), true);
 
+// Obtener ID si viene en la URL: /api/services/123
 $uri = explode("/", trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), "/"));
-$id = is_numeric(end($uri)) ? end($uri) : null;
+$id  = is_numeric(end($uri)) ? (int) end($uri) : null;
 
 /* =========================
-        GET SERVICES
+        GET SERVICES (PUBLIC)
 ========================= */
 
 if ($method === 'GET') {
-
     $stmt = $pdo->query("SELECT * FROM services ORDER BY created_at DESC");
     $services = $stmt->fetchAll();
 
@@ -23,23 +22,29 @@ if ($method === 'GET') {
 }
 
 /* =========================
-        CREATE SERVICE
+   AUTH REQUIRED FROM HERE
+========================= */
+
+$userData = requireAuth();
+
+/* =========================
+        CREATE SERVICE (ADMIN)
 ========================= */
 
 if ($method === 'POST') {
 
-    if ($userData['role'] !== 'admin') {
+    if (($userData['role'] ?? '') !== 'admin') {
         http_response_code(403);
         echo json_encode(["error" => "Only admin can create services"]);
         exit;
     }
 
-    $name = $input['name'] ?? null;
+    $name        = $input['name'] ?? null;
     $description = $input['description'] ?? null;
-    $price = $input['price'] ?? null;
-    $duration = $input['duration'] ?? null;
-    $image = $input['image'] ?? null;
-    $category = $input['category'] ?? null;
+    $price       = $input['price'] ?? null;
+    $duration    = $input['duration'] ?? null;
+    $image       = $input['image'] ?? null;
+    $category    = $input['category'] ?? null;
 
     if (!$name || !$price || !$duration) {
         http_response_code(400);
@@ -53,31 +58,23 @@ if ($method === 'POST') {
         RETURNING *
     ");
 
-    $stmt->execute([
-        $name,
-        $description,
-        $price,
-        $duration,
-        $image,
-        $category
-    ]);
-
+    $stmt->execute([$name, $description, $price, $duration, $image, $category]);
     $service = $stmt->fetch();
 
     echo json_encode([
         "message" => "Service created",
-        "data" => $service
+        "data"    => $service
     ]);
     exit;
 }
 
 /* =========================
-        UPDATE SERVICE
+        UPDATE SERVICE (ADMIN)
 ========================= */
 
 if ($method === 'PUT' && $id) {
 
-    if ($userData['role'] !== 'admin') {
+    if (($userData['role'] ?? '') !== 'admin') {
         http_response_code(403);
         echo json_encode(["error" => "Only admin can update services"]);
         exit;
@@ -91,12 +88,12 @@ if ($method === 'PUT' && $id) {
     ");
 
     $stmt->execute([
-        $input['name'],
-        $input['description'],
-        $input['price'],
-        $input['duration'],
-        $input['image'],
-        $input['category'],
+        $input['name'] ?? null,
+        $input['description'] ?? null,
+        $input['price'] ?? null,
+        $input['duration'] ?? null,
+        $input['image'] ?? null,
+        $input['category'] ?? null,
         $id
     ]);
 
@@ -104,18 +101,18 @@ if ($method === 'PUT' && $id) {
 
     echo json_encode([
         "message" => "Service updated",
-        "data" => $service
+        "data"    => $service
     ]);
     exit;
 }
 
 /* =========================
-        DELETE SERVICE
+        DELETE SERVICE (ADMIN)
 ========================= */
 
 if ($method === 'DELETE' && $id) {
 
-    if ($userData['role'] !== 'admin') {
+    if (($userData['role'] ?? '') !== 'admin') {
         http_response_code(403);
         echo json_encode(["error" => "Only admin can delete services"]);
         exit;

@@ -4,7 +4,7 @@ require_once __DIR__ . '/../core/middleware.php';
 
 $userData = requireAuth();
 
-if ($userData['role'] !== 'admin') {
+if (($userData['role'] ?? '') !== 'admin') {
     http_response_code(403);
     echo json_encode(["error" => "Access denied"]);
     exit;
@@ -13,13 +13,16 @@ if ($userData['role'] !== 'admin') {
 $method = $_SERVER['REQUEST_METHOD'];
 $input = json_decode(file_get_contents("php://input"), true);
 
-$uri = explode("/", trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), "/"));
-$id = is_numeric(end($uri)) ? end($uri) : null;
+// ID (preferimos el que manda index.php)
+$id = $_GET['id'] ?? null;
+if (!$id) {
+    $uri = explode("/", trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), "/"));
+    $id = is_numeric(end($uri)) ? (int) end($uri) : null;
+}
 
 /* =========================
         GET USERS
 ========================= */
-
 if ($method === 'GET') {
 
     $stmt = $pdo->query("
@@ -37,7 +40,6 @@ if ($method === 'GET') {
 /* =========================
         UPDATE ROLE
 ========================= */
-
 if ($method === 'PUT' && $id) {
 
     $role = $input['role'] ?? null;
@@ -67,7 +69,6 @@ if ($method === 'PUT' && $id) {
 /* =========================
         DELETE USER
 ========================= */
-
 if ($method === 'DELETE' && $id) {
 
     $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");

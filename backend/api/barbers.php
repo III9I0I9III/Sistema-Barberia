@@ -2,13 +2,11 @@
 
 require_once __DIR__ . '/../core/middleware.php';
 
-$userData = requireAuth();
 $method = $_SERVER['REQUEST_METHOD'];
 
 /* =========================
-        GET BARBERS
+        GET BARBERS (PUBLIC)
 ========================= */
-
 if ($method === 'GET') {
 
     $stmt = $pdo->query("
@@ -25,15 +23,15 @@ if ($method === 'GET') {
 
     $barbers = $stmt->fetchAll();
 
-    // Agregar campos que el frontend espera
+    // Formato que tu frontend espera
     $formatted = array_map(function ($barber) {
         return [
-            "id" => $barber["id"],
-            "name" => $barber["name"],
-            "avatar" => $barber["avatar"] ?? "",
-            "specialty" => $barber["specialty"],
-            "rating" => 5, // valor fijo (puedes mejorarlo luego)
-            "available" => true // puedes conectar esto a bookings luego
+            "id"        => $barber["id"],
+            "name"      => $barber["name"],
+            "avatar"    => $barber["avatar"] ?? "",
+            "specialty" => $barber["specialty"] ?? "",
+            "rating"    => 5,
+            "available" => true
         ];
     }, $barbers);
 
