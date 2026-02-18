@@ -1,10 +1,10 @@
 <?php
 
-$host = "localhost";
+$host = "localhost"; // si estás en local
 $port = "5432";
-$dbname = "neondb";
-$user = "postgres";
-$password = "postgres";
+$dbname = "neondb"; // 👈 ESTE ES EL CAMBIO IMPORTANTE
+$user = "postgres"; // o el usuario que uses en pgAdmin
+$password = "password"; // o la contraseña que uses en pgAdmin
 
 try {
     $pdo = new PDO(
@@ -16,8 +16,12 @@ try {
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]
     );
+
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(["error" => "Database connection failed"]);
+    echo json_encode([
+        "error" => "Database connection failed",
+        "details" => $e->getMessage()
+    ]);
     exit;
 }
