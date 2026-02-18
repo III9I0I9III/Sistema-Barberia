@@ -2,7 +2,7 @@
 
 $host = "localhost";
 $port = "5432";
-$dbname = "barbados_db";
+$dbname = "neondb";
 $user = "postgres";
 $password = "postgres";
 
