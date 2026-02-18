@@ -21,7 +21,7 @@ export interface Service {
   name: string;
   description: string;
   price: number;
-  duration: number; // in minutes
+  duration: number;
   image: string;
 }
 
