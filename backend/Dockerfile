@@ -7,9 +7,6 @@ RUN apt-get update && apt-get install -y libpq-dev \
 # Activar mod_rewrite
 RUN a2enmod rewrite
 
-# Copiar configuración personalizada de Apache
-COPY apache.conf /etc/apache2/sites-available/000-default.conf
-
 # Copiar proyecto
 COPY . /var/www/html/
 
