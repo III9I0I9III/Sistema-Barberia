@@ -19,6 +19,7 @@ class Database {
     }
 
     public function getConnection() {
+
         $this->conn = null;
 
         try {
@@ -31,10 +32,15 @@ class Database {
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         } catch(PDOException $exception) {
-            die(json_encode([
+
+            http_response_code(500);
+
+            echo json_encode([
                 "error" => "Database connection failed",
                 "details" => $exception->getMessage()
-            ]));
+            ]);
+
+            exit();
         }
 
         return $this->conn;
