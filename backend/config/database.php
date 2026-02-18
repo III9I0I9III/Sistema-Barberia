@@ -1,62 +1,23 @@
 <?php
 
-class Database {
+$host = "localhost";
+$port = "5432";
+$dbname = "barbados_db";
+$user = "postgres";
+$password = "postgres";
 
-    private $host;
-    private $port;
-    private $db_name;
-    private $username;
-    private $password;
-
-    public $conn;
-
-    public function __construct() {
-
-        $this->host = getenv("DB_HOST") ?: "localhost";
-        $this->port = getenv("DB_PORT") ?: "5432";
-        $this->db_name = getenv("DB_NAME") ?: "";
-        $this->username = getenv("DB_USER") ?: "";
-        $this->password = getenv("DB_PASSWORD") ?: "";
-    }
-
-    public function getConnection() {
-
-        $this->conn = null;
-
-        try {
-
-            if (!$this->host || !$this->db_name || !$this->username) {
-                throw new Exception("Variables de entorno DB faltantes");
-            }
-
-            $this->conn = new PDO(
-                "pgsql:host={$this->host};port={$this->port};dbname={$this->db_name};sslmode=require",
-                $this->username,
-                $this->password
-            );
-
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        } catch(Exception $e) {
-
-            http_response_code(500);
-            die(json_encode([
-                "error" => "Database config error",
-                "details" => $e->getMessage()
-            ]));
-
-        } catch(PDOException $exception) {
-
-            http_response_code(500);
-            die(json_encode([
-                "error" => "Database connection failed",
-                "details" => $exception->getMessage()
-            ]));
-        }
-
-        return $this->conn;
-    }
+try {
+    $pdo = new PDO(
+        "pgsql:host=$host;port=$port;dbname=$dbname",
+        $user,
+        $password,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]
+    );
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode(["error" => "Database connection failed"]);
+    exit;
 }
-
-$database = new Database();
-$conn = $database->getConnection();

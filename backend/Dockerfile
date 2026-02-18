@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y libpq-dev \
 
 RUN a2enmod rewrite
 
-RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+RUN sed -i '/<Directory \/var\/www\/html\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
 COPY . /var/www/html/
 

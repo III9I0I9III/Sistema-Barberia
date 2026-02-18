@@ -1,82 +1,62 @@
 <?php
 
-/* =========================
-   DEBUG (CRÍTICO EN RENDER)
-   ========================= */
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-/* =========================
-   CORS (OBLIGATORIO)
-   ========================= */
-
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Content-Type: application/json");
 
-/* =========================
-   PREFLIGHT REQUEST
-   ========================= */
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
+if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
+    exit(0);
 }
 
-/* =========================
-   DATABASE
-   ========================= */
+require_once __DIR__ . "/config/database.php";
 
-require_once __DIR__ . '/config/database.php';
+$uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+$uri = explode("/", trim($uri, "/"));
+$endpoint = $uri[count($uri) - 1];
 
-/* =========================
-   ROUTER
-   ========================= */
+switch (true) {
 
-$url = $_GET['url'] ?? '';
-
-switch ($url) {
-
-    /* =========================
-       PRODUCTS
-       ========================= */
-    case 'api/products':
-        require __DIR__ . '/api/products.php';
+    case $endpoint === "register":
+    case $endpoint === "login":
+        require __DIR__ . "/api/auth.php";
         break;
 
-    /* =========================
-       SERVICES
-       ========================= */
-    case 'api/services':
-        require __DIR__ . '/api/services.php';
+    case $endpoint === "profile":
+    case $endpoint === "change-password":
+    case $endpoint === "delete-account":
+        require __DIR__ . "/api/profile.php";
         break;
 
-    /* =========================
-       BARBERS
-       ========================= */
-    case 'api/barbers':
-        require __DIR__ . '/api/barbers.php';
+    case str_contains($endpoint, "bookings"):
+        require __DIR__ . "/api/bookings.php";
         break;
 
-    /* =========================
-       BOOKINGS
-       ========================= */
-    case 'api/bookings':
-        require __DIR__ . '/api/bookings.php';
+    case $endpoint === "services":
+        require __DIR__ . "/api/services.php";
         break;
 
-    /* =========================
-       DEFAULT / DEBUG
-       ========================= */
+    case $endpoint === "products":
+        require __DIR__ . "/api/products.php";
+        break;
+
+    case $endpoint === "barbers":
+        require __DIR__ . "/api/barbers.php";
+        break;
+
+    case $endpoint === "users":
+        require __DIR__ . "/api/users.php";
+        break;
+
+    case $endpoint === "messages":
+        require __DIR__ . "/api/messages.php";
+        break;
+
+    case $endpoint === "stats":
+        require __DIR__ . "/api/stats.php";
+        break;
+
     default:
         http_response_code(404);
-        echo json_encode([
-            "error" => "Ruta no encontrada",
-            "requested_url" => $url,
-            "hint" => "Usa /api/products o /api/services"
-        ]);
-        break;
+        echo json_encode(["error" => "Endpoint not found"]);
 }
