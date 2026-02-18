@@ -1,3 +1,4 @@
+/* ========================= USERS ========================= */
 export interface User {
   id: number;
   name: string;
@@ -7,6 +8,7 @@ export interface User {
   avatar?: string;
 }
 
+/* ========================= BARBERS ========================= */
 export interface Barber {
   id: number;
   name: string;
@@ -16,15 +18,17 @@ export interface Barber {
   available: boolean;
 }
 
+/* ========================= SERVICES ========================= */
 export interface Service {
   id: number;
   name: string;
   description: string;
   price: number;
-  duration: number;
+  duration: number; // en minutos
   image: string;
 }
 
+/* ========================= PRODUCTS ========================= */
 export interface Product {
   id: number;
   name: string;
@@ -35,21 +39,19 @@ export interface Product {
   category: string;
 }
 
-/* ✅ IMPORTANTE — snake_case */
+/* ========================= BOOKINGS ========================= */
+/* 🔥 Nota: el backend devuelve snake_case; el frontend usa camelCase */
 export interface Booking {
   id: number;
-
-  user_id: number;
-  barber_id: number;
-  service_id: number;
-
-  date: string;
-  time: string;
-
+  userId: number;    // frontend camelCase
+  barberId: number;
+  serviceId: number;
+  date: string;      // "YYYY-MM-DD"
+  time: string;      // "HH:mm"
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
 }
 
-/* AUTH CONTEXT */
+/* ========================= AUTH CONTEXT ========================= */
 export interface AuthContextType {
   user: User | null;
 
@@ -72,4 +74,13 @@ export interface AuthContextType {
   ) => Promise<void>;
 
   deleteAccount: () => Promise<void>;
+}
+
+/* ========================= API RESPONSES GENERALES ========================= */
+export interface ApiResponse<T = any> {
+  data?: T;
+  error?: string;
+  message?: string;
+  token?: string;
+  user?: User;
 }

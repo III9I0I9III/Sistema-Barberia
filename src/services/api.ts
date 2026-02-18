@@ -29,31 +29,22 @@ class ApiService {
         headers,
       });
 
-      const text = await response.text();
-
-      // 🔥 Render a veces devuelve HTML en errores
-      let data;
-
-      try {
-        data = JSON.parse(text);
-      } catch {
-        console.error("😈 NON-JSON RESPONSE:", text);
-        throw new Error("Servidor devolvió algo que NO es JSON");
-      }
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || `HTTP Error ${response.status}`);
+        throw new Error(data.error || 'Request failed');
       }
 
       return data;
 
     } catch (error: any) {
-      console.error("😈 API ERROR:", error.message);
       throw new Error(error.message || 'Network error');
     }
   }
 
-  /* ========================= AUTH ========================= */
+  /* =========================
+        AUTH
+     ========================= */
 
   async register(name: string, email: string, password: string, phone: string) {
     return this.request('register', {
@@ -79,7 +70,40 @@ class ApiService {
     localStorage.removeItem('token');
   }
 
-  /* ========================= BOOKINGS ========================= */
+  /* =========================
+        PROFILE
+     ========================= */
+
+  async getProfile() {
+    return this.request('profile', { method: 'GET' });
+  }
+
+  async updateProfile(name: string, phone: string) {
+    return this.request('profile', {
+      method: 'PUT',
+      body: JSON.stringify({ name, phone }),
+    });
+  }
+
+  async changePassword(currentPassword: string, newPassword: string) {
+    return this.request('change-password', {
+      method: 'POST',
+      body: JSON.stringify({
+        current_password: currentPassword,
+        new_password: newPassword,
+      }),
+    });
+  }
+
+  async deleteAccount() {
+    const data = await this.request('delete-account', { method: 'DELETE' });
+    localStorage.removeItem('token');
+    return data;
+  }
+
+  /* =========================
+        BOOKINGS
+     ========================= */
 
   async getBookings() {
     return this.request('bookings', { method: 'GET' });
@@ -102,22 +126,91 @@ class ApiService {
     });
   }
 
-  /* ========================= SERVICES ========================= */
+  async updateBooking(id: number, status: string) {
+    return this.request(`bookings/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ status }),
+    });
+  }
+
+  async deleteBooking(id: number) {
+    return this.request(`bookings/${id}`, { method: 'DELETE' });
+  }
+
+  /* =========================
+        SERVICES
+     ========================= */
 
   async getServices() {
     return this.request('services', { method: 'GET' });
   }
 
-  /* ========================= PRODUCTS ========================= */
+  async createService(service: any) {
+    return this.request('services', {
+      method: 'POST',
+      body: JSON.stringify(service),
+    });
+  }
+
+  /* =========================
+        PRODUCTS
+     ========================= */
 
   async getProducts() {
     return this.request('products', { method: 'GET' });
   }
 
-  /* ========================= BARBERS ========================= */
+  async createProduct(product: any) {
+    return this.request('products', {
+      method: 'POST',
+      body: JSON.stringify(product),
+    });
+  }
+
+  /* =========================
+        BARBERS
+     ========================= */
 
   async getBarbers() {
     return this.request('barbers', { method: 'GET' });
+  }
+
+  /* =========================
+        USERS (ADMIN)
+     ========================= */
+
+  async getUsers() {
+    return this.request('users', { method: 'GET' });
+  }
+
+  /* =========================
+        MESSAGES
+     ========================= */
+
+  async getMessages(receiverId?: number) {
+    const endpoint = receiverId
+      ? `messages?receiver_id=${receiverId}`
+      : 'messages';
+
+    return this.request(endpoint, { method: 'GET' });
+  }
+
+  async sendMessage(receiverId: number, message: string) {
+    return this.request('messages', {
+      method: 'POST',
+      body: JSON.stringify({
+        receiver_id: receiverId,
+        message,
+      }),
+    });
+  }
+
+  /* =========================
+        STATS
+     ========================= */
+
+  async getStats() {
+    return this.request('stats', { method: 'GET' });
   }
 }
 

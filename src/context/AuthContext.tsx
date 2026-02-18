@@ -19,7 +19,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       try {
         const data = await apiService.getProfile();
-        setUser(data.user);
+
+        if (data.user) {
+          setUser(data.user);
+        } else {
+          localStorage.removeItem("token");
+        }
+
       } catch {
         localStorage.removeItem("token");
       }
@@ -30,38 +36,50 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     initSession();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<void> => {
     const data = await apiService.login(email, password);
 
-    if (data.token) {
+    if (data.token && data.user) {
       localStorage.setItem("token", data.token);
       setUser(data.user);
     }
   };
 
-  const register = async (name: string, email: string, phone: string, password: string) => {
+  const register = async (
+    name: string,
+    email: string,
+    phone: string,
+    password: string
+  ): Promise<void> => {
+
     const data = await apiService.register(name, email, password, phone);
 
-    if (data.token) {
+    if (data.token && data.user) {
       localStorage.setItem("token", data.token);
       setUser(data.user);
     }
   };
 
-  const logout = () => {
+  const logout = (): void => {
     apiService.logout();
     setUser(null);
   };
 
-  const updateProfile = (data: Partial<User>) => {
-    setUser(prev => ({ ...prev!, ...data }));
+  const updateProfile = (data: Partial<User>): void => {
+    setUser(prev => {
+      if (!prev) return prev; // 😈 Protección contra null
+      return { ...prev, ...data };
+    });
   };
 
-  const changePassword = async (currentPassword: string, newPassword: string) => {
+  const changePassword = async (
+    currentPassword: string,
+    newPassword: string
+  ): Promise<void> => {
     await apiService.changePassword(currentPassword, newPassword);
   };
 
-  const deleteAccount = async () => {
+  const deleteAccount = async (): Promise<void> => {
     await apiService.deleteAccount();
     setUser(null);
   };
@@ -69,14 +87,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   if (loading) return <div className="loading-screen">Cargando sesión...</div>;
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, updateProfile, changePassword, deleteAccount }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        updateProfile,
+        changePassword,
+        deleteAccount,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within AuthProvider");
+
+  if (!context) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
+
   return context;
 };
