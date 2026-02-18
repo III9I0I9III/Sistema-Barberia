@@ -1,6 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-
 interface ApiResponse {
   data?: any;
   error?: string;
@@ -12,7 +11,6 @@ interface ApiResponse {
 class ApiService {
   private async request(endpoint: string, options: RequestInit = {}): Promise<ApiResponse> {
     const token = localStorage.getItem('token');
-    
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
       ...(token && { Authorization: `Bearer ${token}` }),
@@ -24,13 +22,8 @@ class ApiService {
         ...options,
         headers,
       });
-
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Request failed');
-      }
-
+      if (!response.ok) throw new Error(data.error || 'Request failed');
       return data;
     } catch (error: any) {
       throw new Error(error.message || 'Network error');
@@ -38,117 +31,71 @@ class ApiService {
   }
 
   // Auth
-  async register(name: string, email: string, password: string, phone: string): Promise<ApiResponse> {
+  async register(name: string, email: string, password: string, phone: string) {
     return this.request('register', {
       method: 'POST',
       body: JSON.stringify({ name, email, password, phone }),
     });
   }
 
-  async login(email: string, password: string): Promise<ApiResponse> {
-    return this.request('login', {
+  async login(email: string, password: string) {
+    const data = await this.request('login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
-  }
-
-  // Services
-  async getServices(): Promise<ApiResponse> {
-    return this.request('services', { method: 'GET' });
-  }
-
-  async createService(service: any): Promise<ApiResponse> {
-    return this.request('services', {
-      method: 'POST',
-      body: JSON.stringify(service),
-    });
-  }
-
-  // Products
-  async getProducts(): Promise<ApiResponse> {
-    return this.request('products', { method: 'GET' });
-  }
-
-  async createProduct(product: any): Promise<ApiResponse> {
-    return this.request('products', {
-      method: 'POST',
-      body: JSON.stringify(product),
-    });
-  }
-
-  // Barbers
-  async getBarbers(): Promise<ApiResponse> {
-    return this.request('barbers', { method: 'GET' });
-  }
-
-  // Users (Admin)
-  async getUsers(): Promise<ApiResponse> {
-    return this.request('users', { method: 'GET' });
+    if (data.token) localStorage.setItem('token', data.token);
+    return data;
   }
 
   // Profile
-  async getProfile(): Promise<ApiResponse> {
-    return this.request('profile', { method: 'GET' });
+  async getProfile() { return this.request('profile', { method: 'GET' }); }
+  async updateProfile(name: string, phone: string) {
+    return this.request('profile', { method: 'PUT', body: JSON.stringify({ name, phone }) });
   }
-
-  async updateProfile(name: string, phone: string): Promise<ApiResponse> {
-    return this.request('profile', {
-      method: 'PUT',
-      body: JSON.stringify({ name, phone }),
-    });
-  }
-
-  async changePassword(currentPassword: string, newPassword: string): Promise<ApiResponse> {
+  async changePassword(currentPassword: string, newPassword: string) {
     return this.request('change-password', {
       method: 'POST',
       body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
     });
   }
-
-  async deleteAccount(): Promise<ApiResponse> {
-    return this.request('delete-account', { method: 'DELETE' });
+  async deleteAccount() {
+    const data = await this.request('delete-account', { method: 'DELETE' });
+    localStorage.removeItem('token');
+    return data;
   }
 
   // Bookings
-  async getBookings(): Promise<ApiResponse> {
-    return this.request('bookings', { method: 'GET' });
-  }
-
-  async createBooking(booking: any): Promise<ApiResponse> {
+  async getBookings() { return this.request('bookings', { method: 'GET' }); }
+  async createBooking(userId: number, barberId: number, serviceId: number, date: string, time: string) {
     return this.request('bookings', {
       method: 'POST',
-      body: JSON.stringify(booking),
+      body: JSON.stringify({ userId, barberId, serviceId, date, time }),
     });
   }
-
-  async updateBooking(id: number, status: string): Promise<ApiResponse> {
-    return this.request(`bookings/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify({ status }),
-    });
+  async updateBooking(id: number, status: string) {
+    return this.request(`bookings/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
   }
+  async deleteBooking(id: number) { return this.request(`bookings/${id}`, { method: 'DELETE' }); }
 
-  async deleteBooking(id: number): Promise<ApiResponse> {
-    return this.request(`bookings/${id}`, { method: 'DELETE' });
+  // Services, Products, Barbers, Messages, Stats
+  async getServices() { return this.request('services', { method: 'GET' }); }
+  async createService(service: any) {
+    return this.request('services', { method: 'POST', body: JSON.stringify(service) });
   }
-
-  // Messages
-  async getMessages(receiverId?: number): Promise<ApiResponse> {
+  async getProducts() { return this.request('products', { method: 'GET' }); }
+  async createProduct(product: any) {
+    return this.request('products', { method: 'POST', body: JSON.stringify(product) });
+  }
+  async getBarbers() { return this.request('barbers', { method: 'GET' }); }
+  async getUsers() { return this.request('users', { method: 'GET' }); }
+  async getMessages(receiverId?: number) {
     const endpoint = receiverId ? `messages?receiver_id=${receiverId}` : 'messages';
     return this.request(endpoint, { method: 'GET' });
   }
-
-  async sendMessage(receiverId: number, message: string): Promise<ApiResponse> {
-    return this.request('messages', {
-      method: 'POST',
-      body: JSON.stringify({ receiver_id: receiverId, message }),
-    });
+  async sendMessage(receiverId: number, message: string) {
+    return this.request('messages', { method: 'POST', body: JSON.stringify({ receiver_id: receiverId, message }) });
   }
-
-  // Stats (Admin)
-  async getStats(): Promise<ApiResponse> {
-    return this.request('stats', { method: 'GET' });
-  }
+  async getStats() { return this.request('stats', { method: 'GET' }); }
 }
 
 export const apiService = new ApiService();
