@@ -7,14 +7,20 @@ RUN apt-get update && apt-get install -y libpq-dev \
 # Activar mod_rewrite
 RUN a2enmod rewrite
 
+# Cambiar DocumentRoot explícitamente
+ENV APACHE_DOCUMENT_ROOT /var/www/html
+
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
+    && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf \
+    && sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/conf-available/*.conf
+
 # Permitir .htaccess
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
-# Copiar archivos al servidor
+# Copiar backend
 COPY . /var/www/html/
 
-# Asegurar permisos correctos
+# Permisos
 RUN chown -R www-data:www-data /var/www/html
 
-# Definir directorio de trabajo
 WORKDIR /var/www/html
