@@ -110,7 +110,6 @@ class ApiService {
   }
 
   async createBooking(
-    userId: number,
     barberId: number,
     serviceId: number,
     date: string,
@@ -119,7 +118,6 @@ class ApiService {
     return this.request('bookings', {
       method: 'POST',
       body: JSON.stringify({
-        user_id: userId,
         barber_id: barberId,
         service_id: serviceId,
         date,

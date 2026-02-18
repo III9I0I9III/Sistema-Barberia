@@ -15,38 +15,57 @@ export const Book: React.FC = () => {
   const [time, setTime] = useState('');
 
   useEffect(() => {
-    apiService.getServices().then(res => setServices(res.data));
-    apiService.getBarbers().then(res => setBarbers(res.data));
+    loadData();
   }, []);
 
-  const handleBooking = async () => {
-    if (!user) return alert("Debes iniciar sesión");
+  const loadData = async () => {
+    try {
+      const servicesRes = await apiService.getServices();
+      const barbersRes = await apiService.getBarbers();
 
-    if (!selectedService) return alert("Selecciona un servicio");
-    if (!selectedBarber) return alert("Selecciona un barbero");
-    if (!date) return alert("Selecciona una fecha");
-    if (!time) return alert("Selecciona una hora");
+      setServices(servicesRes.data || []);
+      setBarbers(barbersRes.data || []);
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+
+  const handleBooking = async () => {
+
+    if (!user) {
+      return alert("Debes iniciar sesión 😈");
+    }
+
+    if (!selectedService) {
+      return alert("Selecciona un servicio");
+    }
+
+    if (!selectedBarber) {
+      return alert("Selecciona un barbero");
+    }
+
+    if (!date || !time) {
+      return alert("Selecciona fecha y hora");
+    }
 
     try {
       await apiService.createBooking(
-        user.id,
         selectedBarber,
         selectedService,
         date,
         time
       );
 
-      alert("Reserva creada correctamente 😈🔥");
+      alert("Reserva creada correctamente 🔥");
 
-      // Limpieza de formulario
+      // Reset opcional
       setSelectedService(null);
       setSelectedBarber(null);
       setDate('');
       setTime('');
 
-    } catch (error) {
-      console.error(error);
-      alert("Error al crear la reserva 💀");
+    } catch (error: any) {
+      alert(error.message);
     }
   };
 
@@ -59,8 +78,10 @@ export const Book: React.FC = () => {
         onChange={e => setSelectedService(Number(e.target.value))}
       >
         <option value="">Seleccionar servicio</option>
-        {services.map(s => (
-          <option key={s.id} value={s.id}>{s.name}</option>
+        {services.map(service => (
+          <option key={service.id} value={service.id}>
+            {service.name}
+          </option>
         ))}
       </select>
 
@@ -69,8 +90,10 @@ export const Book: React.FC = () => {
         onChange={e => setSelectedBarber(Number(e.target.value))}
       >
         <option value="">Seleccionar barbero</option>
-        {barbers.map(b => (
-          <option key={b.id} value={b.id}>{b.name}</option>
+        {barbers.map(barber => (
+          <option key={barber.id} value={barber.id}>
+            {barber.name}
+          </option>
         ))}
       </select>
 
