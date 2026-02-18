@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/backend/api/public
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 RUN apt-get update && apt-get install -y libpq-dev \
   && docker-php-ext-install pdo_pgsql pgsql \
@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y libpq-dev \
   && a2enconf servername
 
 COPY . /var/www/html/
+
 RUN chown -R www-data:www-data /var/www/html
 
 WORKDIR /var/www/html
