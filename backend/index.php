@@ -136,91 +136,6 @@ function verifyToken() {
 }
 
 /* =========================
-   REGISTER
-========================= */
-if ($endpoint === 'register' && $request_method === 'POST') {
-
-    $data = getInputData();
-
-    if (empty($data['name']) || empty($data['email']) || empty($data['password'])) {
-        sendResponse(400, ["error" => "Missing required fields"]);
-    }
-
-    try {
-        global $conn;
-
-        $check = $conn->prepare("SELECT id FROM users WHERE email = :email");
-        $check->execute(['email' => $data['email']]);
-
-        if ($check->rowCount() > 0) {
-            sendResponse(400, ["error" => "Email already exists"]);
-        }
-
-        $hashed_password = password_hash($data['password'], PASSWORD_BCRYPT);
-
-        $query = $conn->prepare("
-            INSERT INTO users (name, email, password, phone, role)
-            VALUES (:name, :email, :password, :phone, 'client')
-            RETURNING id
-        ");
-
-        $query->execute([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => $hashed_password,
-            'phone' => $data['phone'] ?? null
-        ]);
-
-        $user_id = $query->fetchColumn();
-
-        $user = [
-            'id' => $user_id,
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
-            'role' => 'client'
-        ];
-
-        $token = createToken($user);
-
-        sendResponse(201, ['token' => $token, 'user' => $user]);
-
-    } catch(PDOException $e) {
-        sendResponse(500, ["error" => $e->getMessage()]);
-    }
-}
-
-/* =========================
-   LOGIN
-========================= */
-if ($endpoint === 'login' && $request_method === 'POST') {
-
-    $data = getInputData();
-
-    try {
-        global $conn;
-
-        $query = $conn->prepare("SELECT * FROM users WHERE email = :email");
-        $query->execute(['email' => $data['email']]);
-
-        $user = $query->fetch(PDO::FETCH_ASSOC);
-
-        if (!$user || !password_verify($data['password'], $user['password'])) {
-            sendResponse(401, ["error" => "Invalid credentials"]);
-        }
-
-        unset($user['password']);
-
-        $token = createToken($user);
-
-        sendResponse(200, ['token' => $token, 'user' => $user]);
-
-    } catch(PDOException $e) {
-        sendResponse(500, ["error" => $e->getMessage()]);
-    }
-}
-
-/* =========================
    PRODUCTS
 ========================= */
 if ($endpoint === 'products' && $request_method === 'GET') {
@@ -243,7 +158,13 @@ if ($endpoint === 'services' && $request_method === 'GET') {
 ========================= */
 if ($endpoint === 'barbers' && $request_method === 'GET') {
     global $conn;
-    $query = $conn->query("SELECT id, name, specialty, avatar FROM users WHERE role = 'barber'");
+
+    $query = $conn->query("
+        SELECT u.id, u.name, b.specialty, u.avatar
+        FROM users u
+        JOIN barbers b ON u.id = b.user_id
+    ");
+
     sendResponse(200, $query->fetchAll(PDO::FETCH_ASSOC));
 }
 
@@ -263,16 +184,16 @@ if ($endpoint === 'bookings' && $request_method === 'POST') {
         global $conn;
 
         $query = $conn->prepare("
-            INSERT INTO bookings (user_id, barber_id, service_id, date, time, status)
-            VALUES (:user_id, :barber_id, :service_id, :date, :time, 'pending')
+            INSERT INTO bookings (user_id, barber_id, service_id, booking_date, booking_time, status)
+            VALUES (:user_id, :barber_id, :service_id, :booking_date, :booking_time, 'pending')
         ");
 
         $query->execute([
             'user_id' => $payload['id'],
             'barber_id' => $data['barber_id'],
             'service_id' => $data['service_id'],
-            'date' => $data['date'],
-            'time' => $data['time']
+            'booking_date' => $data['date'],
+            'booking_time' => $data['time']
         ]);
 
         sendResponse(201, ["message" => "Booking created"]);
@@ -288,16 +209,21 @@ if ($endpoint === 'bookings' && $request_method === 'POST') {
 if ($endpoint === 'bookings' && $request_method === 'GET') {
 
     $payload = verifyToken();
-
     global $conn;
 
     $query = $conn->prepare("
-        SELECT b.*, s.name AS service, u.name AS barber
+        SELECT 
+            b.id,
+            b.booking_date,
+            b.booking_time,
+            b.status,
+            s.name AS service,
+            u.name AS barber
         FROM bookings b
         JOIN services s ON b.service_id = s.id
         JOIN users u ON b.barber_id = u.id
         WHERE b.user_id = :id
-        ORDER BY b.date DESC
+        ORDER BY b.booking_date DESC
     ");
 
     $query->execute(['id' => $payload['id']]);
@@ -319,11 +245,14 @@ if ($endpoint === 'admin/bookings' && $request_method === 'GET') {
     global $conn;
 
     $query = $conn->query("
-        SELECT b.*, u.name, s.name AS service
+        SELECT 
+            b.*,
+            u.name,
+            s.name AS service
         FROM bookings b
         JOIN users u ON b.user_id = u.id
         JOIN services s ON b.service_id = s.id
-        ORDER BY b.date DESC
+        ORDER BY b.booking_date DESC
     ");
 
     sendResponse(200, $query->fetchAll(PDO::FETCH_ASSOC));
