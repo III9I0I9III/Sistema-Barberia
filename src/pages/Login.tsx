@@ -1,130 +1,72 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Scissors, Mail, Lock, AlertCircle } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
+export default function Login() {
 
-export const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
 
     try {
+      setError("");
+
       await login(email, password);
-      navigate('/');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
-    } finally {
-      setLoading(false);
+
+      const role = localStorage.getItem("role");
+
+      if (role === "admin") navigate("/admin");
+      else if (role === "barber") navigate("/barber-panel");
+      else navigate("/");
+
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
   return (
-    <div className="login-container">
-      <div className="login-wrapper">
-        <div className="login-card">
+    <div className="min-h-screen flex items-center justify-center">
 
-          <div className="login-header">
-            <div className="icon-wrapper">
-              <Scissors className="icon-main" />
-            </div>
-            <h2>Bienvenido de nuevo</h2>
-            <p>Inicia sesión en tu cuenta</p>
-          </div>
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
 
-          <div className="login-body">
+        <h2 className="text-2xl font-bold mb-4">Login</h2>
 
-            {error && (
-              <div className="error-box">
-                <AlertCircle className="icon-small" />
-                {error}
-              </div>
-            )}
+        {error && (
+          <p className="text-red-500 mb-3">{error}</p>
+        )}
 
-            <form onSubmit={handleSubmit} className="form">
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full mb-3 p-2 border rounded"
+          required
+        />
 
-              <div className="form-group">
-                <label htmlFor="email">Correo Electrónico</label>
-                <div className="input-wrapper">
-                  <Mail className="input-icon" />
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="tu@email.com"
-                  />
-                </div>
-              </div>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full mb-3 p-2 border rounded"
+          required
+        />
 
-              <div className="form-group">
-                <label htmlFor="password">Contraseña</label>
-                <div className="input-wrapper">
-                  <Lock className="input-icon" />
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                  />
-                </div>
-              </div>
+        <button
+          type="submit"
+          className="w-full bg-black text-white p-2 rounded"
+        >
+          Login
+        </button>
 
-              <div className="form-options">
-                <div className="remember">
-                  <input id="remember-me" name="remember-me" type="checkbox" />
-                  <label htmlFor="remember-me">Recordarme</label>
-                </div>
-                <div>
-                  <a href="#" className="forgot-link">
-                    ¿Olvidaste tu contraseña?
-                  </a>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="submit-button"
-              >
-                {loading ? 'Iniciando...' : 'Iniciar Sesión'}
-              </button>
-
-            </form>
-
-            <div className="register-section">
-              <p>
-                ¿No tienes una cuenta?{' '}
-                <Link to="/register" className="register-link">
-                  Regístrate aquí
-                </Link>
-              </p>
-            </div>
-
-            <div className="demo-section">
-              <p>
-                Demo: cliente@test.com / 123456
-              </p>
-            </div>
-
-          </div>
-        </div>
-      </div>
+      </form>
     </div>
   );
-};
+}

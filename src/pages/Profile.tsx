@@ -1,249 +1,99 @@
-import React, { useState } from 'react';
-import { User, Mail, Phone, Lock, Trash2, Edit3, Save, AlertCircle, Check } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import '../index.css';
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { apiService } from "../services/api";
 
-export const Profile: React.FC = () => {
-  const { user, updateProfile, changePassword, deleteAccount } = useAuth();
-  const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(user?.name || '');
-  const [phone, setPhone] = useState(user?.phone || '');
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+export default function ProfilePage() {
+  const { user, updateProfile, changePassword, deleteAccount, logout } = useAuth();
+  const [name, setName] = useState(user?.name || "");
+  const [phone, setPhone] = useState(user?.phone || "");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleUpdateProfile = () => {
-    updateProfile({ name, phone });
-    setIsEditing(false);
-    setMessage('Perfil actualizado exitosamente');
-    setTimeout(() => setMessage(''), 3000);
+  useEffect(() => {
+    setName(user?.name || "");
+    setPhone(user?.phone || "");
+  }, [user]);
+
+  const handleUpdateProfile = async () => {
+    try {
+      await apiService.updateProfile(name, phone);
+      updateProfile({ name, phone });
+      setMessage("Perfil actualizado correctamente");
+    } catch (err: any) {
+      setMessage(err.message);
+    }
   };
 
-  const handleChangePassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    if (newPassword !== confirmNewPassword) {
-      setError('Las contraseñas nuevas no coinciden');
-      return;
-    }
-
+  const handleChangePassword = async () => {
     try {
       await changePassword(currentPassword, newPassword);
-      setMessage('Contraseña cambiada exitosamente');
-      setShowPasswordForm(false);
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmNewPassword('');
-      setTimeout(() => setMessage(''), 3000);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al cambiar contraseña');
+      setMessage("Contraseña actualizada");
+      setCurrentPassword("");
+      setNewPassword("");
+    } catch (err: any) {
+      setMessage(err.message);
     }
   };
 
   const handleDeleteAccount = async () => {
-    if (window.confirm('¿Estás seguro que deseas eliminar tu cuenta? Esta acción no se puede deshacer.')) {
+    if (!confirm("¿Seguro que quieres eliminar tu cuenta?")) return;
+    try {
       await deleteAccount();
+      logout();
+    } catch (err: any) {
+      setMessage(err.message);
     }
   };
 
-  if (!user) {
-    return (
-      <div className="profile-empty">
-        <p>Por favor inicia sesión para ver tu perfil</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="profile-container">
-
-      <div className="profile-card">
-        <div className="profile-header">
-          <div className="profile-avatar">
-            <User className="icon-large" />
-          </div>
-          <div>
-            <h1>{user.name}</h1>
-            <p className="role">
-              {user.role === 'client' && 'Cliente'}
-              {user.role === 'barber' && 'Barbero'}
-              {user.role === 'admin' && 'Administrador'}
-            </p>
-          </div>
-        </div>
-
-        <div className="profile-body">
-
-          {message && (
-            <div className="success-box">
-              <Check className="icon-small" />
-              {message}
-            </div>
-          )}
-
-          <div className="section">
-            <h2>Información Personal</h2>
-
-            {isEditing ? (
-              <div className="form-section">
-                <div>
-                  <label>Nombre</label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-
-                <div>
-                  <label>Teléfono</label>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                </div>
-
-                <div className="btn-row">
-                  <button onClick={handleUpdateProfile} className="btn-primary">
-                    <Save className="icon-small" />
-                    <span>Guardar</span>
-                  </button>
-
-                  <button onClick={() => setIsEditing(false)} className="btn-secondary">
-                    Cancelar
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="info-section">
-
-                <div className="info-row">
-                  <User className="icon-small gray" />
-                  <div>
-                    <p className="label">Nombre</p>
-                    <p className="value">{user.name}</p>
-                  </div>
-                </div>
-
-                <div className="info-row">
-                  <Mail className="icon-small gray" />
-                  <div>
-                    <p className="label">Correo Electrónico</p>
-                    <p className="value">{user.email}</p>
-                  </div>
-                </div>
-
-                <div className="info-row">
-                  <Phone className="icon-small gray" />
-                  <div>
-                    <p className="label">Teléfono</p>
-                    <p className="value">{user.phone}</p>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="edit-btn"
-                >
-                  <Edit3 className="icon-small" />
-                  <span>Editar Perfil</span>
-                </button>
-
-              </div>
-            )}
-          </div>
-
-        </div>
+    <div className="p-8 max-w-lg mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Mi Perfil</h2>
+      {message && <p className="text-green-500 mb-4">{message}</p>}
+      <div className="mb-4">
+        <label className="block mb-1">Nombre:</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
       </div>
-
-      <div className="profile-card">
-        <div className="profile-body">
-          <div className="password-header">
-            <h2>Cambiar Contraseña</h2>
-            {!showPasswordForm && (
-              <button onClick={() => setShowPasswordForm(true)} className="edit-btn">
-                Cambiar
-              </button>
-            )}
-          </div>
-
-          {showPasswordForm && (
-            <form onSubmit={handleChangePassword} className="form-section">
-
-              {error && (
-                <div className="error-box">
-                  <AlertCircle className="icon-small" />
-                  {error}
-                </div>
-              )}
-
-              <div>
-                <label>Contraseña Actual</label>
-                <input
-                  type="password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label>Nueva Contraseña</label>
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label>Confirmar Nueva Contraseña</label>
-                <input
-                  type="password"
-                  value={confirmNewPassword}
-                  onChange={(e) => setConfirmNewPassword(e.target.value)}
-                />
-              </div>
-
-              <div className="btn-row">
-                <button type="submit" className="btn-primary">
-                  <Lock className="icon-small" />
-                  <span>Cambiar Contraseña</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowPasswordForm(false);
-                    setError('');
-                  }}
-                  className="btn-secondary"
-                >
-                  Cancelar
-                </button>
-              </div>
-
-            </form>
-          )}
-        </div>
+      <div className="mb-4">
+        <label className="block mb-1">Teléfono:</label>
+        <input
+          type="text"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
       </div>
+      <button onClick={handleUpdateProfile} className="bg-blue-600 text-white p-2 rounded mb-4 w-full">
+        Actualizar Perfil
+      </button>
 
-      <div className="delete-card">
-        <div>
-          <h2>Eliminar Cuenta</h2>
-          <p>Elimina permanentemente tu cuenta y todos tus datos</p>
-        </div>
+      <h3 className="text-xl font-bold mb-2">Cambiar Contraseña</h3>
+      <input
+        type="password"
+        placeholder="Contraseña actual"
+        value={currentPassword}
+        onChange={(e) => setCurrentPassword(e.target.value)}
+        className="w-full p-2 mb-2 border rounded"
+      />
+      <input
+        type="password"
+        placeholder="Nueva contraseña"
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
+        className="w-full p-2 mb-2 border rounded"
+      />
+      <button onClick={handleChangePassword} className="bg-green-600 text-white p-2 rounded mb-4 w-full">
+        Cambiar Contraseña
+      </button>
 
-        <button onClick={handleDeleteAccount} className="btn-danger">
-          <Trash2 className="icon-small" />
-          <span>Eliminar Cuenta</span>
-        </button>
-      </div>
-
+      <button onClick={handleDeleteAccount} className="bg-red-600 text-white p-2 rounded w-full">
+        Eliminar Cuenta
+      </button>
     </div>
   );
-};
+}

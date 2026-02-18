@@ -1,14 +1,11 @@
 <?php
 
-// =========================
-// MOSTRAR ERRORES (SOLO DESARROLLO)
-// =========================
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// =========================
-// CORS
-// =========================
+/* =========================
+   CORS
+========================= */
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -19,25 +16,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// =========================
-// DATABASE
-// =========================
+/* =========================
+   DATABASE
+========================= */
 require_once 'config/database.php';
 
-// =========================
-// ROUTER
-// =========================
+/* =========================
+   ROUTER SEGURO
+========================= */
 $request_method = $_SERVER['REQUEST_METHOD'];
 
-$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$path = str_replace('/api', '', $path);
-$path = trim($path, '/');
+$uri = $_SERVER['REQUEST_URI'];
+$uri = explode('?', $uri)[0];
+$uri = str_replace('/api/', '', $uri);
+$uri = trim($uri, '/');
 
-$endpoint = $path;
+$endpoint = $uri;
 
-// =========================
-// HELPERS
-// =========================
+/* =========================
+   HELPERS
+========================= */
 function getInputData() {
     return json_decode(file_get_contents("php://input"), true);
 }
@@ -48,9 +46,9 @@ function sendResponse($status, $data) {
     exit();
 }
 
-// =========================
-// BASE64 URL SAFE
-// =========================
+/* =========================
+   JWT HELPERS
+========================= */
 function base64url_encode($data) {
     return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
@@ -59,12 +57,27 @@ function base64url_decode($data) {
     return base64_decode(strtr($data, '-_', '+/'));
 }
 
-// =========================
-// JWT
-// =========================
+function getAuthorizationHeader() {
+    if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+        return $_SERVER['HTTP_AUTHORIZATION'];
+    }
+
+    if (function_exists('apache_request_headers')) {
+        $headers = apache_request_headers();
+        if (isset($headers['Authorization'])) {
+            return $headers['Authorization'];
+        }
+    }
+
+    return null;
+}
+
+/* =========================
+   JWT
+========================= */
 function createToken($user) {
 
-    $secret_key = getenv('JWT_SECRET') ?: 'tu_clave_secreta_segura_2026';
+    $secret_key = getenv('JWT_SECRET') ?: 'SUPER_SECRET_KEY_2026';
 
     $header = base64url_encode(json_encode([
         'typ' => 'JWT',
@@ -88,19 +101,19 @@ function createToken($user) {
 
 function verifyToken() {
 
-    $secret_key = getenv('JWT_SECRET') ?: 'tu_clave_secreta_segura_2026';
+    $secret_key = getenv('JWT_SECRET') ?: 'SUPER_SECRET_KEY_2026';
 
-    $headers = function_exists('getallheaders') ? getallheaders() : [];
+    $auth_header = getAuthorizationHeader();
 
-    if (!isset($headers['Authorization'])) {
+    if (!$auth_header) {
         sendResponse(401, ["error" => "No token provided"]);
     }
 
-    $token = str_replace('Bearer ', '', $headers['Authorization']);
+    $token = str_replace('Bearer ', '', $auth_header);
     $parts = explode('.', $token);
 
     if (count($parts) !== 3) {
-        sendResponse(401, ["error" => "Invalid token format"]);
+        sendResponse(401, ["error" => "Invalid token"]);
     }
 
     list($header, $payload, $signature) = $parts;
@@ -110,7 +123,7 @@ function verifyToken() {
     );
 
     if (!hash_equals($valid_signature, $signature)) {
-        sendResponse(401, ["error" => "Invalid token signature"]);
+        sendResponse(401, ["error" => "Invalid signature"]);
     }
 
     $decoded_payload = json_decode(base64url_decode($payload), true);
@@ -122,9 +135,9 @@ function verifyToken() {
     return $decoded_payload;
 }
 
-// =========================
-// REGISTER
-// =========================
+/* =========================
+   REGISTER
+========================= */
 if ($endpoint === 'register' && $request_method === 'POST') {
 
     $data = getInputData();
@@ -146,15 +159,16 @@ if ($endpoint === 'register' && $request_method === 'POST') {
         $hashed_password = password_hash($data['password'], PASSWORD_BCRYPT);
 
         $query = $conn->prepare("
-            INSERT INTO users (name, email, password, role)
-            VALUES (:name, :email, :password, 'client')
+            INSERT INTO users (name, email, password, phone, role)
+            VALUES (:name, :email, :password, :phone, 'client')
             RETURNING id
         ");
 
         $query->execute([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => $hashed_password
+            'password' => $hashed_password,
+            'phone' => $data['phone'] ?? null
         ]);
 
         $user_id = $query->fetchColumn();
@@ -163,13 +177,13 @@ if ($endpoint === 'register' && $request_method === 'POST') {
             'id' => $user_id,
             'name' => $data['name'],
             'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
             'role' => 'client'
         ];
 
         $token = createToken($user);
 
         sendResponse(201, [
-            'message' => 'User registered successfully',
             'token' => $token,
             'user' => $user
         ]);
@@ -179,21 +193,17 @@ if ($endpoint === 'register' && $request_method === 'POST') {
     }
 }
 
-// =========================
-// LOGIN
-// =========================
+/* =========================
+   LOGIN
+========================= */
 if ($endpoint === 'login' && $request_method === 'POST') {
 
     $data = getInputData();
 
-    if (empty($data['email']) || empty($data['password'])) {
-        sendResponse(400, ["error" => "Email and password required"]);
-    }
-
     try {
         global $conn;
 
-        $query = $conn->prepare("SELECT * FROM users WHERE email = :email");
+        $query = $conn->prepare("SELECT id, name, email, phone, role, password FROM users WHERE email = :email");
         $query->execute(['email' => $data['email']]);
 
         $user = $query->fetch(PDO::FETCH_ASSOC);
@@ -207,7 +217,6 @@ if ($endpoint === 'login' && $request_method === 'POST') {
         $token = createToken($user);
 
         sendResponse(200, [
-            'message' => 'Login successful',
             'token' => $token,
             'user' => $user
         ]);
@@ -217,9 +226,9 @@ if ($endpoint === 'login' && $request_method === 'POST') {
     }
 }
 
-// =========================
-// PROFILE
-// =========================
+/* =========================
+   PROFILE
+========================= */
 if ($endpoint === 'profile' && $request_method === 'GET') {
 
     $payload = verifyToken();
@@ -228,7 +237,7 @@ if ($endpoint === 'profile' && $request_method === 'GET') {
         global $conn;
 
         $query = $conn->prepare("
-            SELECT id, name, email, role
+            SELECT id, name, email, phone, role
             FROM users
             WHERE id = :id
         ");
@@ -236,14 +245,14 @@ if ($endpoint === 'profile' && $request_method === 'GET') {
         $query->execute(['id' => $payload['id']]);
         $user = $query->fetch(PDO::FETCH_ASSOC);
 
-        sendResponse(200, $user);
+        sendResponse(200, [
+            'user' => $user
+        ]);
 
     } catch(PDOException $e) {
         sendResponse(500, ["error" => $e->getMessage()]);
     }
 }
 
-// =========================
-// NOT FOUND
-// =========================
 sendResponse(404, ["error" => "Endpoint not found"]);
+

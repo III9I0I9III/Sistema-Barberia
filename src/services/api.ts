@@ -11,6 +11,7 @@ interface ApiResponse {
 class ApiService {
   private async request(endpoint: string, options: RequestInit = {}): Promise<ApiResponse> {
     const token = localStorage.getItem('token');
+
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
       ...(token && { Authorization: `Bearer ${token}` }),
@@ -47,6 +48,10 @@ class ApiService {
     return data;
   }
 
+  async logout() {
+    localStorage.removeItem('token');
+  }
+
   // Profile
   async getProfile() { return this.request('profile', { method: 'GET' }); }
   async updateProfile(name: string, phone: string) {
@@ -77,17 +82,21 @@ class ApiService {
   }
   async deleteBooking(id: number) { return this.request(`bookings/${id}`, { method: 'DELETE' }); }
 
-  // Services, Products, Barbers, Messages, Stats
+  // Services
   async getServices() { return this.request('services', { method: 'GET' }); }
-  async createService(service: any) {
-    return this.request('services', { method: 'POST', body: JSON.stringify(service) });
-  }
+  async createService(service: any) { return this.request('services', { method: 'POST', body: JSON.stringify(service) }); }
+
+  // Products
   async getProducts() { return this.request('products', { method: 'GET' }); }
-  async createProduct(product: any) {
-    return this.request('products', { method: 'POST', body: JSON.stringify(product) });
-  }
+  async createProduct(product: any) { return this.request('products', { method: 'POST', body: JSON.stringify(product) }); }
+
+  // Barbers
   async getBarbers() { return this.request('barbers', { method: 'GET' }); }
+
+  // Users (Admin)
   async getUsers() { return this.request('users', { method: 'GET' }); }
+
+  // Messages
   async getMessages(receiverId?: number) {
     const endpoint = receiverId ? `messages?receiver_id=${receiverId}` : 'messages';
     return this.request(endpoint, { method: 'GET' });
@@ -95,6 +104,8 @@ class ApiService {
   async sendMessage(receiverId: number, message: string) {
     return this.request('messages', { method: 'POST', body: JSON.stringify({ receiver_id: receiverId, message }) });
   }
+
+  // Stats
   async getStats() { return this.request('stats', { method: 'GET' }); }
 }
 
