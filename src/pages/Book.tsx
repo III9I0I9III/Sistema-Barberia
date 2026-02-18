@@ -22,39 +22,73 @@ export const Book: React.FC = () => {
   const handleBooking = async () => {
     if (!user) return alert("Debes iniciar sesión");
 
-    await apiService.createBooking(
-      user.id,
-      selectedBarber!,
-      selectedService!,
-      date,
-      time
-    );
+    if (!selectedService) return alert("Selecciona un servicio");
+    if (!selectedBarber) return alert("Selecciona un barbero");
+    if (!date) return alert("Selecciona una fecha");
+    if (!time) return alert("Selecciona una hora");
 
-    alert("Reserva creada correctamente");
+    try {
+      await apiService.createBooking(
+        user.id,
+        selectedBarber,
+        selectedService,
+        date,
+        time
+      );
+
+      alert("Reserva creada correctamente 😈🔥");
+
+      // Limpieza de formulario
+      setSelectedService(null);
+      setSelectedBarber(null);
+      setDate('');
+      setTime('');
+
+    } catch (error) {
+      console.error(error);
+      alert("Error al crear la reserva 💀");
+    }
   };
 
   return (
     <div>
       <h1>Reservar Cita</h1>
 
-      <select onChange={e => setSelectedService(Number(e.target.value))}>
-        <option>Seleccionar servicio</option>
+      <select
+        value={selectedService ?? ''}
+        onChange={e => setSelectedService(Number(e.target.value))}
+      >
+        <option value="">Seleccionar servicio</option>
         {services.map(s => (
           <option key={s.id} value={s.id}>{s.name}</option>
         ))}
       </select>
 
-      <select onChange={e => setSelectedBarber(Number(e.target.value))}>
-        <option>Seleccionar barbero</option>
+      <select
+        value={selectedBarber ?? ''}
+        onChange={e => setSelectedBarber(Number(e.target.value))}
+      >
+        <option value="">Seleccionar barbero</option>
         {barbers.map(b => (
           <option key={b.id} value={b.id}>{b.name}</option>
         ))}
       </select>
 
-      <input type="date" onChange={e => setDate(e.target.value)} />
-      <input type="time" onChange={e => setTime(e.target.value)} />
+      <input
+        type="date"
+        value={date}
+        onChange={e => setDate(e.target.value)}
+      />
 
-      <button onClick={handleBooking}>Confirmar</button>
+      <input
+        type="time"
+        value={time}
+        onChange={e => setTime(e.target.value)}
+      />
+
+      <button onClick={handleBooking}>
+        Confirmar
+      </button>
     </div>
   );
 };

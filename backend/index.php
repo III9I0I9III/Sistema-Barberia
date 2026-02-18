@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once 'config/database.php';
 
 /* =========================
-   ROUTER SEGURO
+   ROUTER
 ========================= */
 $request_method = $_SERVER['REQUEST_METHOD'];
 
@@ -183,10 +183,7 @@ if ($endpoint === 'register' && $request_method === 'POST') {
 
         $token = createToken($user);
 
-        sendResponse(201, [
-            'token' => $token,
-            'user' => $user
-        ]);
+        sendResponse(201, ['token' => $token, 'user' => $user]);
 
     } catch(PDOException $e) {
         sendResponse(500, ["error" => $e->getMessage()]);
@@ -203,7 +200,7 @@ if ($endpoint === 'login' && $request_method === 'POST') {
     try {
         global $conn;
 
-        $query = $conn->prepare("SELECT id, name, email, phone, role, password FROM users WHERE email = :email");
+        $query = $conn->prepare("SELECT * FROM users WHERE email = :email");
         $query->execute(['email' => $data['email']]);
 
         $user = $query->fetch(PDO::FETCH_ASSOC);
@@ -216,10 +213,7 @@ if ($endpoint === 'login' && $request_method === 'POST') {
 
         $token = createToken($user);
 
-        sendResponse(200, [
-            'token' => $token,
-            'user' => $user
-        ]);
+        sendResponse(200, ['token' => $token, 'user' => $user]);
 
     } catch(PDOException $e) {
         sendResponse(500, ["error" => $e->getMessage()]);
@@ -227,32 +221,112 @@ if ($endpoint === 'login' && $request_method === 'POST') {
 }
 
 /* =========================
-   PROFILE
+   PRODUCTS
 ========================= */
-if ($endpoint === 'profile' && $request_method === 'GET') {
+if ($endpoint === 'products' && $request_method === 'GET') {
+    global $conn;
+    $query = $conn->query("SELECT * FROM products ORDER BY id DESC");
+    sendResponse(200, $query->fetchAll(PDO::FETCH_ASSOC));
+}
+
+/* =========================
+   SERVICES
+========================= */
+if ($endpoint === 'services' && $request_method === 'GET') {
+    global $conn;
+    $query = $conn->query("SELECT * FROM services ORDER BY id ASC");
+    sendResponse(200, $query->fetchAll(PDO::FETCH_ASSOC));
+}
+
+/* =========================
+   BARBERS
+========================= */
+if ($endpoint === 'barbers' && $request_method === 'GET') {
+    global $conn;
+    $query = $conn->query("SELECT id, name, specialty, avatar FROM users WHERE role = 'barber'");
+    sendResponse(200, $query->fetchAll(PDO::FETCH_ASSOC));
+}
+
+/* =========================
+   BOOKINGS (CREATE)
+========================= */
+if ($endpoint === 'bookings' && $request_method === 'POST') {
 
     $payload = verifyToken();
+    $data = getInputData();
+
+    if (empty($data['service_id']) || empty($data['barber_id']) || empty($data['date']) || empty($data['time'])) {
+        sendResponse(400, ["error" => "Missing booking data"]);
+    }
 
     try {
         global $conn;
 
         $query = $conn->prepare("
-            SELECT id, name, email, phone, role
-            FROM users
-            WHERE id = :id
+            INSERT INTO bookings (user_id, barber_id, service_id, date, time, status)
+            VALUES (:user_id, :barber_id, :service_id, :date, :time, 'pending')
         ");
 
-        $query->execute(['id' => $payload['id']]);
-        $user = $query->fetch(PDO::FETCH_ASSOC);
-
-        sendResponse(200, [
-            'user' => $user
+        $query->execute([
+            'user_id' => $payload['id'],
+            'barber_id' => $data['barber_id'],
+            'service_id' => $data['service_id'],
+            'date' => $data['date'],
+            'time' => $data['time']
         ]);
+
+        sendResponse(201, ["message" => "Booking created"]);
 
     } catch(PDOException $e) {
         sendResponse(500, ["error" => $e->getMessage()]);
     }
 }
 
-sendResponse(404, ["error" => "Endpoint not found"]);
+/* =========================
+   BOOKINGS (USER)
+========================= */
+if ($endpoint === 'bookings' && $request_method === 'GET') {
 
+    $payload = verifyToken();
+
+    global $conn;
+
+    $query = $conn->prepare("
+        SELECT b.*, s.name AS service, u.name AS barber
+        FROM bookings b
+        JOIN services s ON b.service_id = s.id
+        JOIN users u ON b.barber_id = u.id
+        WHERE b.user_id = :id
+        ORDER BY b.date DESC
+    ");
+
+    $query->execute(['id' => $payload['id']]);
+
+    sendResponse(200, $query->fetchAll(PDO::FETCH_ASSOC));
+}
+
+/* =========================
+   ADMIN BOOKINGS
+========================= */
+if ($endpoint === 'admin/bookings' && $request_method === 'GET') {
+
+    $payload = verifyToken();
+
+    if ($payload['role'] !== 'admin') {
+        sendResponse(403, ["error" => "Forbidden"]);
+    }
+
+    global $conn;
+
+    $query = $conn->query("
+        SELECT b.*, u.name, s.name AS service
+        FROM bookings b
+        JOIN users u ON b.user_id = u.id
+        JOIN services s ON b.service_id = s.id
+        ORDER BY b.date DESC
+    ");
+
+    sendResponse(200, $query->fetchAll(PDO::FETCH_ASSOC));
+}
+
+sendResponse(404, ["error" => "Endpoint not found"]);

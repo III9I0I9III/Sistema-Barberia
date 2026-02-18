@@ -35,22 +35,41 @@ export interface Product {
   category: string;
 }
 
+/* ✅ IMPORTANTE — snake_case */
 export interface Booking {
   id: number;
-  userId: number;
-  barberId: number;
-  serviceId: number;
+
+  user_id: number;
+  barber_id: number;
+  service_id: number;
+
   date: string;
   time: string;
+
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
 }
 
+/* AUTH CONTEXT */
 export interface AuthContextType {
   user: User | null;
+
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, phone: string, password: string) => Promise<void>;
+
+  register: (
+    name: string,
+    email: string,
+    phone: string,
+    password: string
+  ) => Promise<void>;
+
   logout: () => void;
+
   updateProfile: (data: Partial<User>) => void;
-  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+
+  changePassword: (
+    currentPassword: string,
+    newPassword: string
+  ) => Promise<void>;
+
   deleteAccount: () => Promise<void>;
 }
