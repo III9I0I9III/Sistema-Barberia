@@ -1,9 +1,9 @@
 /* ==========================
-   TAILWIND (v3)
+   TAILWIND (v4)
 ========================== */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/preflight";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 /* ==========================
    GENERAL
