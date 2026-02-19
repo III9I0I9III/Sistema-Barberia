@@ -1,9 +1,13 @@
-﻿/* ---- Tailwind v4 (correcto) ---- */
+/* ---- Tailwind v4 (correcto) ---- */
 @import "tailwindcss";
 @source "./index.html" "./src/**/*.{js,ts,jsx,tsx}";
 
-/* â¬‡ï¸ Pega debajo todo TU CSS personalizado (Hero, Login, Products, etc.)
-   âš ï¸ NO vuelvas a poner:
+/* ⬇️ Pega debajo todo TU CSS personalizado (Hero, Login, Products, etc.)
+   ⚠️ NO vuelvas a poner:
+   - @import "tailwindcss/base";
+   - @import "tailwindcss/components";
+   - @import "tailwindcss/utilities";
+   - @tailwind base; @tailwind components; @tailwind utilities;
 */
 
 /* ==========================
@@ -19,7 +23,7 @@
   background: #f9fafb;
 }
 
-/* Un contenedor para que el HERO quede como â€œtarjetaâ€ centrada */
+/* Un contenedor para que el HERO quede como “tarjeta” centrada */
 .home-container {
   width: 100%;
   max-width: 1120px;
@@ -44,7 +48,7 @@
   text-align: center;
   padding: 6rem 2rem;
 
-  /* Sombra fuerte tipo â€œcard premiumâ€ */
+  /* Sombra fuerte tipo “card premium” */
   box-shadow: 0 30px 90px rgba(0,0,0,0.35);
 }
 
@@ -112,7 +116,7 @@
   gap: 1rem;
 }
 
-/* BotÃ³n dorado */
+/* Botón dorado */
 .hero .btn-primary {
   background: linear-gradient(135deg, #d4af37, #fbbf24);
   color: #111827;
@@ -129,7 +133,7 @@
   box-shadow: 0 18px 40px rgba(212,175,55,0.35);
 }
 
-/* BotÃ³n borde dorado */
+/* Botón borde dorado */
 .hero .btn-secondary {
   border: 2px solid #fbbf24;
   color: #fbbf24;
