@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { apiService } from '../services/api';
 import { Service, Barber } from '../types';
 import { useAuth } from '../context/AuthContext';
+import  "./index.css";
 
 export const Book: React.FC = () => {
   const { user } = useAuth();
