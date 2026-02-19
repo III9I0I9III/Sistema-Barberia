@@ -1,6 +1,6 @@
 ﻿/* ---- Tailwind v4 (correcto) ---- */
 @import "tailwindcss";
-@source "./index.html" "./src/**/*.{js,ts,jsx,tsx}";
+
 
 /* â¬‡ï¸ Pega debajo todo TU CSS personalizado (Hero, Login, Products, etc.)
    âš ï¸ NO vuelvas a poner:
