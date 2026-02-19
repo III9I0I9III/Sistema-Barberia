@@ -1,4 +1,5 @@
 ﻿@import "tailwindcss";
+/* @source "./index.html" "./src/**/*/*/{js,ts,jsx,tsx}"; */
 /* nada más en la cabecera */
 
 /* =========================================================
