@@ -1,9 +1,18 @@
+/* src/index.css (v4) */
+@import "tailwindcss";
+
+/* (opcional pero útil) dile a Tailwind qué archivos escanear */
+@source "./index.html" "./src/**/*.{js,ts,jsx,tsx}";
+
+/* ...luego todo tu CSS personalizado, por ejemplo el HERO... */
 /* ==========================
    TAILWIND (v4)
 ========================== */
-@import "tailwindcss/preflight";
+@import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+/* o @tailwind base; @tailwind components; @tailwind utilities; */
+
 
 /* ==========================
    GENERAL
