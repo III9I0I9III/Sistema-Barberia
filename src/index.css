@@ -69,6 +69,9 @@
 
 @keyframes glowPulse { 0%{filter:brightness(1)} 50%{filter:brightness(1.06)} 100%{filter:brightness(1)} }
 
+/* Placeholders */
+::placeholder{ color: var(--slate-400); }
+
 /* =========================================================
    LAYOUT BASE
 ========================================================= */
@@ -102,6 +105,7 @@
 .register-btn:hover{ background:var(--gold-500); }
 .login-link{ color:#cbd5e1; text-decoration:none; padding:.45rem .75rem; border-radius:10px; transition: var(--t-fast); }
 .login-link:hover{ background: rgba(255,255,255,.06); color:#fff; }
+
 .nav-mobile{ display:flex; overflow-x:auto; gap:.25rem; background:#0b1220; border-top:1px solid rgba(255,255,255,.06); padding:.4rem; }
 .mobile-link{
   display:inline-flex; align-items:center; gap:.35rem; padding:.5rem .75rem; text-decoration:none; color:#94a3b8; white-space:nowrap; border-radius:10px; transition: var(--t-fast);
@@ -191,6 +195,7 @@
 }
 .card-3d:hover{ transform: translateY(-8px) rotateX(1.2deg) rotateY(.8deg); box-shadow: var(--shadow-md); border-color: rgba(15,23,42,.10); }
 .card-3d:hover::after{ opacity:.9; }
+@supports (backdrop-filter: blur(10px)){ .card-3d.is-glass{ background: var(--glass-bg); border:1px solid var(--glass-br); backdrop-filter: blur(10px); } }
 
 /* =========================================================
    SERVICES — cards 3D (Home y Página)
@@ -288,7 +293,7 @@
 .star-icon{ width:1rem; height:1rem; color: var(--gold-600); fill: var(--gold-600); }
 .description{ font-size:.9rem; color:var(--slate-600); margin:.3rem 0 .8rem; }
 .product-bottom{ display:flex; justify-content:space-between; align-items:center; }
-.price{ font-size:1.4rem; font-weight:800; color:var(--ink-2); }
+.price{ font-size:1.4rem; font-weight:800; color: var(--ink-2); }
 .stock{ display:flex; align-items:center; gap:.35rem; color:var(--slate-500); font-size:.8rem; }
 .package-icon{ width:.8rem; height:.8rem; }
 .buy-btn{
@@ -385,14 +390,16 @@ tr:hover{ background:#f9fafb; }
    -> grilla + cards 3D, sin cambiar tus TSX.
 ========================================================= */
 /* 1) El contenedor que tenga H1 seguido de al menos un DIV se vuelve GRID */
-.main-content > div:has(> h1 + div){
+.main-content > div:has(> h1 + div),
+#root > div:has(> h1 + div){
   display:grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.2rem;
   align-items: stretch;
 }
 /* 2) El H1 ocupa todo el ancho de la grilla */
-.main-content > div:has(> h1 + div) > h1{
+.main-content > div:has(> h1 + div) > h1,
+#root > div:has(> h1 + div) > h1{
   grid-column: 1 / -1;
   margin: .2rem 0 .4rem 0;
   font-size: clamp(1.8rem, 3vw, 2.4rem);
@@ -401,76 +408,128 @@ tr:hover{ background:#f9fafb; }
 }
 /* 3) Cada DIV que sigue al H1 se convierte en tarjeta 3D */
 .main-content > div:has(> h1 + div) > h1 + div,
-.main-content > div:has(> h1 + div) > h1 + div ~ div{
+.main-content > div:has(> h1 + div) > h1 + div ~ div,
+#root > div:has(> h1 + div) > h1 + div,
+#root > div:has(> h1 + div) > h1 + div ~ div{
   position:relative; overflow:hidden; border-radius: var(--r-card);
   background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.94));
   border:1px solid rgba(15,23,42,.06); box-shadow: var(--shadow-xs);
   padding: 1rem .95rem; transition: transform var(--t-slow), box-shadow var(--t-fast), border-color var(--t-fast);
 }
 .main-content > div:has(> h1 + div) > h1 + div:hover,
-.main-content > div:has(> h1 + div) > h1 + div ~ div:hover{
+.main-content > div:has(> h1 + div) > h1 + div ~ div:hover,
+#root > div:has(> h1 + div) > h1 + div:hover,
+#root > div:has(> h1 + div) > h1 + div ~ div:hover{
   transform: translateY(-6px) rotateX(.6deg);
   box-shadow: var(--shadow-md);
   border-color: rgba(15,23,42,.1);
 }
 /* Primer <p>: título; segundo <p>: precio (degradado dorado) */
-.main-content > div:has(> h1 + div) > div > p:first-child{
+.main-content > div:has(> h1 + div) > div > p:first-child,
+#root > div:has(> h1 + div) > div > p:first-child{
   font-weight:800; color: var(--ink-2); font-size:1.05rem; margin:0 0 .35rem 0;
 }
-.main-content > div:has(> h1 + div) > div > p:nth-child(2){
+.main-content > div:has(> h1 + div) > div > p:nth-child(2),
+#root > div:has(> h1 + div) > div > p:nth-child(2){
   font-weight:800; font-size:1.1rem; margin:.25rem 0 0 0;
   background: linear-gradient(135deg, var(--gold-700), var(--gold-500));
   -webkit-background-clip:text; background-clip:text; color: transparent;
 }
-/* Si hay más <p>, actúan como descripción */
-.main-content > div:has(> h1 + div) > div > p:nth-child(n+3){
+.main-content > div:has(> h1 + div) > div > p:nth-child(n+3),
+#root > div:has(> h1 + div) > div > p:nth-child(n+3){
   color: var(--slate-600); font-size:.92rem; margin:.25rem 0 0 0;
 }
-/* Botón opcional dentro del ítem (si lo agregas en TSX) */
-.main-content > div:has(> h1 + div) > div > button{
+.main-content > div:has(> h1 + div) > div > button,
+#root > div:has(> h1 + div) > div > button{
   margin-top:.75rem; padding:.55rem .9rem; border-radius:12px; border:none; cursor:pointer;
   background: var(--gold-600); color: var(--ink-2); font-weight:800; transition: var(--t-fast);
 }
-.main-content > div:has(> h1 + div) > div > button:hover{ background: var(--gold-500); transform: translateY(-2px); }
+.main-content > div:has(> h1 + div) > div > button:hover,
+#root > div:has(> h1 + div) > div > button:hover{ background: var(--gold-500); transform: translateY(-2px); }
 
 /* =========================================================
-   *** AUTO-SKIN AUTH (Login/Register sin clases) ***
-   Aplica diseño de tarjeta si el form no tiene clases.
+   *** AUTH AUTO-SKIN (Login/Register sin clases) ***
+   1) Centra y da fondo a la pantalla que contenga un <form>.
+   2) Convierte el <form> en tarjeta elegante (sin cambiar TSX).
 ========================================================= */
-.main-content > div > form,
-.main-content > form{
-  width:100%; max-width:28rem; margin: 2rem auto; padding: 1.2rem 1.2rem 1.35rem;
-  background:#fff; border:1px solid rgba(15,23,42,.06); border-radius: 18px; box-shadow: var(--shadow-md);
+/* 1) Fondo y centrado en páginas con form */
+.main-content:has(> form),
+.main-content:has(> div > form),
+#root > div:has(> form){
+  min-height: calc(100vh - 120px);
+  display:grid; place-items:center;
+  padding: 2rem 1rem;
+  background:
+    radial-gradient(900px 300px at 50% -10%, rgba(255,255,255,.08), transparent 55%),
+    linear-gradient(135deg, #0b1220, #0f172a);
 }
+
+/* 2) Card para el form */
+.main-content > form,
+.main-content > div > form,
+#root > div > form{
+  width:100%; max-width:28rem;
+  background:#fff; border:1px solid rgba(15,23,42,.06);
+  border-radius:18px; box-shadow: var(--shadow-md);
+  padding: 1.2rem 1.2rem 1.35rem;
+}
+
+/* Header del form */
+.main-content > form > h2,
 .main-content > div > form > h2,
-.main-content > form > h2{
+#root > div > form > h2{
   margin:0 0 .8rem 0; font-size:1.45rem; font-weight:800; color: var(--ink-2); text-align:center;
 }
+
+/* Mensaje de error */
+.main-content > form > p,
 .main-content > div > form > p,
-.main-content > form > p{
+#root > div > form > p{
   margin:.5rem 0 1rem 0; background:#fef2f2; border:1px solid #fecaca; color:#b91c1c;
   padding:.6rem .8rem; border-radius:.65rem; font-size:.9rem;
 }
+
+/* Inputs */
+.main-content > form input[type="text"],
+.main-content > form input[type="email"],
+.main-content > form input[type="password"],
+.main-content > form input[type="tel"],
 .main-content > div > form input[type="text"],
 .main-content > div > form input[type="email"],
 .main-content > div > form input[type="password"],
 .main-content > div > form input[type="tel"],
-.main-content > form input[type="text"],
-.main-content > form input[type="email"],
-.main-content > form input[type="password"],
-.main-content > form input[type="tel"]{
+#root > div > form input[type="text"],
+#root > div > form input[type="email"],
+#root > div > form input[type="password"],
+#root > div > form input[type="tel"]{
   width:100%; margin:.55rem 0; padding:.75rem .9rem; border:1px solid var(--slate-300);
   border-radius:.75rem; transition:.2s; font-size:.95rem;
 }
+.main-content > form input:focus,
 .main-content > div > form input:focus,
-.main-content > form input:focus{ outline:none; border-color:var(--gold-600); box-shadow:0 0 0 2px #f59e0b33; }
+#root > div > form input:focus{
+  outline:none; border-color:var(--gold-600); box-shadow:0 0 0 2px #f59e0b33;
+}
+
+/* Botón submit */
+.main-content > form button[type="submit"],
 .main-content > div > form button[type="submit"],
-.main-content > form button[type="submit"]{
+#root > div > form button[type="submit"]{
   width:100%; margin-top:.8rem; padding:.8rem 1rem; border:none; border-radius:.8rem;
   background: var(--gold-600); color: var(--ink-2); font-weight:800; cursor:pointer; transition: var(--t-fast);
 }
+.main-content > form button[type="submit"]:hover,
 .main-content > div > form button[type="submit"]:hover,
-.main-content > form button[type="submit"]:hover{ background: var(--gold-500); }
+#root > div > form button[type="submit"]:hover{
+  background: var(--gold-500);
+}
+
+/* Subtítulos dentro del form (por ej. "Cambiar contraseña") */
+.main-content > form > h3,
+.main-content > div > form > h3,
+#root > div > form > h3{
+  margin-top:1.2rem; font-weight:800; color: var(--ink-2);
+}
 
 /* =========================================================
    EXTRA: Chips & Badges
