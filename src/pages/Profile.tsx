@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { apiService } from "../services/api";
 
-
 export default function ProfilePage() {
   const { user, updateProfile, changePassword, deleteAccount, logout } = useAuth();
+
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
   const [currentPassword, setCurrentPassword] = useState("");
@@ -48,51 +48,54 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="p-8 max-w-lg mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Mi Perfil</h2>
-      {message && <p className="text-green-500 mb-4">{message}</p>}
-      <div className="mb-4">
-        <label className="block mb-1">Nombre:</label>
+    <div>
+      <h2>Mi Perfil</h2>
+
+      {message && <p>{message}</p>}
+
+      <div>
+        <label>Nombre:</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full p-2 border rounded"
         />
       </div>
-      <div className="mb-4">
-        <label className="block mb-1">Teléfono:</label>
+
+      <div>
+        <label>Teléfono:</label>
         <input
           type="text"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="w-full p-2 border rounded"
         />
       </div>
-      <button onClick={handleUpdateProfile} className="bg-blue-600 text-white p-2 rounded mb-4 w-full">
+
+      <button onClick={handleUpdateProfile}>
         Actualizar Perfil
       </button>
 
-      <h3 className="text-xl font-bold mb-2">Cambiar Contraseña</h3>
+      <h3>Cambiar Contraseña</h3>
+
       <input
         type="password"
         placeholder="Contraseña actual"
         value={currentPassword}
         onChange={(e) => setCurrentPassword(e.target.value)}
-        className="w-full p-2 mb-2 border rounded"
       />
+
       <input
         type="password"
         placeholder="Nueva contraseña"
         value={newPassword}
         onChange={(e) => setNewPassword(e.target.value)}
-        className="w-full p-2 mb-2 border rounded"
       />
-      <button onClick={handleChangePassword} className="bg-green-600 text-white p-2 rounded mb-4 w-full">
+
+      <button onClick={handleChangePassword}>
         Cambiar Contraseña
       </button>
 
-      <button onClick={handleDeleteAccount} className="bg-red-600 text-white p-2 rounded w-full">
+      <button onClick={handleDeleteAccount}>
         Eliminar Cuenta
       </button>
     </div>
