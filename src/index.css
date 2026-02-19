@@ -47,7 +47,7 @@
   --t-slow: .45s cubic-bezier(.2,.7,.2,1);
 }
 
-/* Accesibilidad: reduce motion */
+/* Accesibilidad: reduced motion */
 @media (prefers-reduced-motion: reduce){
   *{
     animation-duration:.001ms !important;
@@ -172,10 +172,6 @@
   padding:.7rem 1.2rem; border-radius:12px; font-weight:700; border:none; cursor:pointer; transition: var(--t-fast);
 }
 .btn-amber:hover{ background:var(--gold-500); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
-.btn-green{ background:var(--ok); color:#fff; padding:.7rem 1.2rem; border-radius:12px; font-weight:700; border:none; cursor:pointer; transition: var(--t-fast); }
-.btn-green:hover{ background:var(--ok-2); }
-.btn-danger{ background:var(--danger); color:#fff; padding:.7rem 1.2rem; border-radius:12px; font-weight:700; border:none; cursor:pointer; transition: var(--t-fast); }
-.btn-danger:hover{ background:var(--danger-2); }
 
 /* =========================================================
    CARD BASE 3D (reutilizable)
@@ -195,10 +191,9 @@
 }
 .card-3d:hover{ transform: translateY(-8px) rotateX(1.2deg) rotateY(.8deg); box-shadow: var(--shadow-md); border-color: rgba(15,23,42,.10); }
 .card-3d:hover::after{ opacity:.9; }
-@supports (backdrop-filter: blur(10px)){ .card-3d.is-glass{ background: var(--glass-bg); border:1px solid var(--glass-br); backdrop-filter: blur(10px); } }
 
 /* =========================================================
-   SERVICES — sección Home y página /cards 3D
+   SERVICES — cards 3D (Home y Página)
 ========================================================= */
 .services .section-header, .services-header{ text-align:center; margin-bottom:1.75rem; }
 .services .section-header h2, .services-header h1{ font-size: clamp(1.8rem, 3.2vw, 2.6rem); font-weight: 800; color: var(--ink-2); }
@@ -221,7 +216,7 @@
 .service-image{ position:relative; height: 220px; overflow:hidden; }
 .service-image img{ width:100%; height:100%; object-fit:cover; transform: scale(1.02); transition: transform var(--t-slow), filter var(--t-fast); }
 .service-card:hover .service-image img{ transform: scale(1.07); filter: saturate(1.03); }
-/* Home usa .service-price; página usa .price-badge: soporta ambos */
+/* Home usa .service-price; página usa .price-badge */
 .service-price, .price-badge{
   position:absolute; top:12px; right:12px; z-index:2;
   padding: .45rem .9rem; border-radius: var(--r-pill);
@@ -340,7 +335,7 @@
 .star-empty{ color: #d1d5db; width:1rem; height:1rem; }
 
 /* =========================================================
-   PROFILE (si usas clases)
+   PROFILE
 ========================================================= */
 .profile-container{ max-width:48rem; margin:0 auto; display:flex; flex-direction:column; gap:1.6rem; }
 .profile-card{ background:#fff; border:1px solid rgba(15,23,42,.06); border-radius: 18px; box-shadow: var(--shadow-sm); overflow:hidden; }
@@ -353,37 +348,6 @@
 .info-row{ display:flex; align-items:center; gap:1rem; padding:.75rem 0; border-bottom:1px solid var(--slate-200); }
 .label{ color: var(--slate-600); font-size:.9rem; }
 .value{ color: var(--ink-2); font-weight:700; }
-
-/* =========================================================
-   AUTH AUTO-SKIN (Login & Register sin clases)
-   — estiliza cualquier <form> directo en la página
-========================================================= */
-.main-content form{
-  width:100%; max-width:28rem; margin: 2.2rem auto; padding: 1.25rem 1.25rem 1.4rem;
-  background:#fff; border:1px solid rgba(15,23,42,.06); border-radius: 18px; box-shadow: var(--shadow-md);
-}
-.main-content form > h2{
-  margin:0 0 .8rem 0; font-size:1.45rem; font-weight:800; color: var(--ink-2); text-align:center;
-}
-.main-content form > p{
-  margin:.5rem 0 1rem 0; background:#fef2f2; border:1px solid #fecaca; color:#b91c1c;
-  padding:.6rem .8rem; border-radius:.65rem; font-size:.9rem;
-}
-.main-content form input[type="text"],
-.main-content form input[type="email"],
-.main-content form input[type="password"],
-.main-content form input[type="tel"]{
-  width:100%; margin:.55rem 0; padding:.75rem .9rem; border:1px solid var(--slate-300);
-  border-radius:.75rem; transition:.2s; font-size:.95rem;
-}
-.main-content form input:focus{ outline:none; border-color:var(--gold-600); box-shadow:0 0 0 2px #f59e0b33; }
-.main-content form button[type="submit"],
-.main-content form > button{
-  width:100%; margin-top:.8rem; padding:.8rem 1rem; border:none; border-radius:.8rem;
-  background: var(--gold-600); color: var(--ink-2); font-weight:800; cursor:pointer; transition: var(--t-fast);
-}
-.main-content form button:hover{ background: var(--gold-500); }
-.main-content form > h3{ margin-top:1.2rem; font-weight:800; color: var(--ink-2); }
 
 /* =========================================================
    BOOK / RESERVAS (compact)
@@ -414,54 +378,60 @@ table{ width:100%; border-collapse:collapse; }
 th,td{ padding:.75rem 1rem; text-align:left; }
 th{ font-size:.75rem; text-transform:uppercase; color:var(--slate-600); }
 tr:hover{ background:#f9fafb; }
-.btn-amber-small{ background:#fef3c7; color:#b45309; padding:.25rem .5rem; border-radius:.5rem; margin-right:.25rem; cursor:pointer; transition:.25s; }
-.btn-amber-small:hover{ background:#fde68a; }
-.btn-red-small{ background:#fee2e2; color:#b91c1c; padding:.25rem .5rem; border-radius:.5rem; cursor:pointer; transition:.25s; }
-.btn-red-small:hover{ background:#fecaca; }
 
 /* =========================================================
-   *** AUTO-CARDS PARA PÁGINAS SIN CLASES (fallback) ***
-   Convierte listas simples en tarjetas 3D bajo un H1.
-   Aplica a Services.tsx y Products.tsx actuales (h1 + lista de <div><p>…</p>…).
+   *** AUTO-CARDS (FALLBACK) PARA LISTAS SIN CLASES ***
+   Convierte automáticamente: <div><h1/> <div/> <div/> ...</div>
+   -> grilla + cards 3D, sin cambiar tus TSX.
 ========================================================= */
-/* Grid automático: el contenedor inmediatamente después de un H1 */
-.main-content > h1 + div{
+/* 1) El contenedor que tenga H1 seguido de al menos un DIV se vuelve GRID */
+.main-content > div:has(> h1 + div){
   display:grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.2rem;
-  margin-top:.8rem;
+  align-items: stretch;
 }
-
-/* Cada item se vuelve tarjeta */
-.main-content > h1 + div > div{
+/* 2) El H1 ocupa todo el ancho de la grilla */
+.main-content > div:has(> h1 + div) > h1{
+  grid-column: 1 / -1;
+  margin: .2rem 0 .4rem 0;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 800;
+  color: var(--ink-2);
+}
+/* 3) Cada DIV que sigue al H1 se convierte en tarjeta 3D */
+.main-content > div:has(> h1 + div) > h1 + div,
+.main-content > div:has(> h1 + div) > h1 + div ~ div{
   position:relative; overflow:hidden; border-radius: var(--r-card);
   background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.94));
   border:1px solid rgba(15,23,42,.06); box-shadow: var(--shadow-xs);
   padding: 1rem .95rem; transition: transform var(--t-slow), box-shadow var(--t-fast), border-color var(--t-fast);
 }
-.main-content > h1 + div > div:hover{ transform: translateY(-6px) rotateX(.6deg); box-shadow: var(--shadow-md); border-color: rgba(15,23,42,.1); }
-
-/* Primer <p> = título; segundo <p> = precio */
-.main-content > h1 + div > div > p:first-child{
+.main-content > div:has(> h1 + div) > h1 + div:hover,
+.main-content > div:has(> h1 + div) > h1 + div ~ div:hover{
+  transform: translateY(-6px) rotateX(.6deg);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(15,23,42,.1);
+}
+/* Primer <p>: título; segundo <p>: precio (degradado dorado) */
+.main-content > div:has(> h1 + div) > div > p:first-child{
   font-weight:800; color: var(--ink-2); font-size:1.05rem; margin:0 0 .35rem 0;
 }
-.main-content > h1 + div > div > p:nth-child(2){
-  font-weight:800; color: var(--ink-2); font-size:1.1rem; margin:.25rem 0 0 0;
+.main-content > div:has(> h1 + div) > div > p:nth-child(2){
+  font-weight:800; font-size:1.1rem; margin:.25rem 0 0 0;
   background: linear-gradient(135deg, var(--gold-700), var(--gold-500));
   -webkit-background-clip:text; background-clip:text; color: transparent;
 }
-
-/* Si el producto/servicio trae más de dos <p>, los demás se muestran como descripción */
-.main-content > h1 + div > div > p:nth-child(n+3){
+/* Si hay más <p>, actúan como descripción */
+.main-content > div:has(> h1 + div) > div > p:nth-child(n+3){
   color: var(--slate-600); font-size:.92rem; margin:.25rem 0 0 0;
 }
-
-/* Botón CTA automático al pie (si agregas un <button> dentro del item) */
-.main-content > h1 + div > div > button{
+/* Botón opcional dentro del ítem (si lo agregas en TSX) */
+.main-content > div:has(> h1 + div) > div > button{
   margin-top:.75rem; padding:.55rem .9rem; border-radius:12px; border:none; cursor:pointer;
   background: var(--gold-600); color: var(--ink-2); font-weight:800; transition: var(--t-fast);
 }
-.main-content > h1 + div > div > button:hover{ background: var(--gold-500); transform: translateY(-2px); }
+.main-content > div:has(> h1 + div) > div > button:hover{ background: var(--gold-500); transform: translateY(-2px); }
 
 /* =========================================================
    *** AUTO-SKIN AUTH (Login/Register sin clases) ***
