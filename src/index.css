@@ -1,8 +1,5 @@
-﻿/* =========================================================
-   Tailwind v4 — Entrada única
-   (Quité @source para evitar el warning de VS Code)
-========================================================= */
-@import "tailwindcss";
+﻿@import "tailwindcss";
+/* nada más en la cabecera */
 
 /* =========================================================
    TOKENS (colores, sombras, radios, timing)
