@@ -1,4 +1,15 @@
 @import "tailwindcss";
+
+/* ✅ Base opcional (puedes dejarlo así) */
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
 /* ==========================
    GENERAL HOME STYLES
 ========================== */
