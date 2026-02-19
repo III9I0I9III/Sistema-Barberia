@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { apiService } from '../services/api';
 import { Product } from '../types';
+import  "./index.css";
 
 export const Products: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
