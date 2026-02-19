@@ -29,21 +29,17 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md p-6 bg-white shadow-md rounded-xl"
-      >
-        <h2 className="mb-4 text-2xl font-bold">Login</h2>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <h2>Login</h2>
 
-        {error && <p className="mb-3 text-red-500">{error}</p>}
+        {error && <p>{error}</p>}
 
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 mb-3 border rounded"
           required
         />
 
@@ -52,13 +48,10 @@ export default function Login() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 mb-3 border rounded"
           required
         />
 
-        <button type="submit" className="w-full p-2 text-white bg-black rounded">
-          Login
-        </button>
+        <button type="submit">Login</button>
       </form>
     </div>
   );
