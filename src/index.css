@@ -50,7 +50,7 @@
   --t-slow:.45s cubic-bezier(.2,.7,.2,1);
 }
 
-/* Accesibilidad: reduced motion */
+/* Accesibilidad */
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
 }
@@ -64,21 +64,17 @@
 .icon-large{width:2rem;height:2rem;}
 .muted{color:var(--slate-600);}
 ::placeholder{color:var(--slate-400);}
-
 @keyframes glowPulse{0%{filter:brightness(1)}50%{filter:brightness(1.06)}100%{filter:brightness(1)}}
 
-/* Encabezado de secciones (p.ej. “Nuestros Barberos”) */
+/* Encabezado de secciones */
 .section-header{ text-align:center; margin:1.1rem 0 1.6rem; }
 .section-header h2{
   font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; letter-spacing:-.02em;
-  color:transparent;
-  background:linear-gradient(180deg,var(--ink-2),#2b3446 60%);
-  -webkit-background-clip:text; background-clip:text;
-  display:inline-block; position:relative; padding-bottom:.35rem;
+  color:transparent; background:linear-gradient(180deg,var(--ink-2),#2b3446 60%);
+  -webkit-background-clip:text; background-clip:text; display:inline-block; position:relative; padding-bottom:.35rem;
 }
 .section-header h2::after{
-  content:""; display:block; width:84px; height:4px; margin:.55rem auto 0;
-  border-radius:999px;
+  content:""; display:block; width:84px; height:4px; margin:.55rem auto 0; border-radius:999px;
   background:linear-gradient(135deg,var(--gold-700),var(--gold-500));
   box-shadow:0 6px 16px rgba(212,175,55,.35);
 }
@@ -134,9 +130,7 @@
 .hero-content{position:relative;z-index:1;max-width:700px;margin:0 auto;}
 .hero-icon{
   width:min(26rem,90%);height:3.75rem;margin:0 auto 1.6rem;display:flex;align-items:center;justify-content:center;border-radius:var(--r-pill);
-  background:linear-gradient(135deg,var(--gold-700),var(--gold-500));
-  box-shadow:0 20px 40px rgba(212,175,55,.35),inset 0 -4px 10px rgba(0,0,0,.15);
-  transition:transform var(--t-fast);
+  background:linear-gradient(135deg,var(--gold-700),var(--gold-500));box-shadow:0 20px 40px rgba(212,175,55,.35),inset 0 -4px 10px rgba(0,0,0,.15);transition:transform var(--t-fast);
 }
 .hero-icon:hover{transform:translateY(-2px) scale(1.02);}
 .hero-icon .icon{color:var(--ink-2);width:2.1rem;height:2.1rem;}
@@ -154,51 +148,39 @@
   transition:transform var(--t-fast),box-shadow var(--t-fast),filter var(--t-fast);
 }
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 42px rgba(212,175,55,.35);filter:saturate(1.05);}
-
 .btn-secondary{
-  display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.8rem;border-radius:var(--r-pill);font-weight:800;text-decoration:none;
-  border:2px solid var(--gold-500);color:var(--gold-500);transition:all var(--t-fast);
+  display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.8rem;border-radius:var(--r-pill);font-weight:800;text-decoration:none;border:2px solid var(--gold-500);color:var(--gold-500);
+  transition:all var(--t-fast);
 }
 .btn-secondary:hover{background:var(--gold-500);color:var(--ink-2);transform:translateY(-2px);box-shadow:0 10px 24px rgba(251,191,36,.2);}
-
 .btn-amber{display:inline-flex;align-items:center;gap:.5rem;background:var(--gold-600);color:var(--ink-2);padding:.7rem 1.2rem;border-radius:12px;font-weight:800;border:none;cursor:pointer;transition:var(--t-fast);}
 .btn-amber:hover{background:var(--gold-500);transform:translateY(-2px);box-shadow:var(--shadow-sm);}
-
 .btn-green{background:var(--ok);color:#fff;padding:.7rem 1.2rem;border-radius:12px;font-weight:800;border:none;cursor:pointer;transition:var(--t-fast);}
 .btn-green:hover{background:var(--ok-2);}
-
 .btn-info{background:var(--info);color:#fff;padding:.7rem 1.2rem;border-radius:12px;font-weight:800;border:none;cursor:pointer;transition:var(--t-fast);}
 .btn-info:hover{background:var(--info-2);}
-
 .btn-danger{background:var(--danger);color:#fff;padding:.7rem 1.2rem;border-radius:12px;font-weight:800;border:none;cursor:pointer;transition:var(--t-fast);}
 .btn-danger:hover{background:var(--danger-2);}
 
 /* =========================================================
-   CARD BASE 3D (reutilizable)
+   CARD BASE 3D
 ========================================================= */
 .card-3d{
-  position:relative;border-radius:var(--r-card);overflow:hidden;
-  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.94));
-  border:1px solid rgba(15,23,42,.06);
-  box-shadow:var(--shadow-sm);transform-style:preserve-3d;transform:translateZ(0);
+  position:relative;border-radius:var(--r-card);overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.94));
+  border:1px solid rgba(15,23,42,.06);box-shadow:var(--shadow-sm);transform:translateZ(0);
   transition:transform var(--t-slow),box-shadow var(--t-fast),border-color var(--t-fast);
 }
-.card-3d::after{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(80% 60% at 50% 0%,rgba(255,255,255,.35),transparent 60%);
-  mix-blend-mode:overlay;opacity:.6;transition:opacity var(--t-fast);
-}
+.card-3d::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(80% 60% at 50% 0%,rgba(255,255,255,.35),transparent 60%);mix-blend-mode:overlay;opacity:.6;transition:opacity var(--t-fast);}
 .card-3d:hover{transform:translateY(-8px) rotateX(1.2deg) rotateY(.8deg);box-shadow:var(--shadow-md);border-color:rgba(15,23,42,.10);}
 .card-3d:hover::after{opacity:.9;}
 @supports(backdrop-filter:blur(10px)){.card-3d.is-glass{background:var(--glass-bg);border:1px solid var(--glass-br);backdrop-filter:blur(10px);}}
 
 /* =========================================================
-   SERVICES (cards 3D)
+   SERVICES
 ========================================================= */
 .services .section-header,.services-header{ text-align:center;margin-bottom:1.6rem;}
 .services .section-header h2,.services-header h1{ font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:900;}
 .services .section-header p,.services-header p{ color:var(--slate-600);max-width:42rem;margin:.5rem auto 0;}
-
 .services-grid{--col-min:280px;display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--col-min),1fr));gap:1.4rem;perspective:1200px;}
 .service-card{position:relative;border-radius:var(--r-card);overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.94));border:1px solid rgba(15,23,42,.06);box-shadow:var(--shadow-sm);transform:translateZ(0);transition:transform var(--t-slow),box-shadow var(--t-fast),border-color var(--t-fast);}
 .service-card:hover{transform:translateY(-8px) rotateX(1.1deg) rotateY(.7deg);box-shadow:var(--shadow-md);}
@@ -215,7 +197,7 @@
 .btn-service:hover{background:var(--gold-600);color:var(--ink-2);}
 
 /* =========================================================
-   PRODUCTS (cards 3D)
+   PRODUCTS
 ========================================================= */
 .products-header{text-align:center;margin-bottom:1.5rem;}
 .products-header h1{font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:900;color:var(--ink-2);}
@@ -224,7 +206,6 @@
 .category-btn{padding:.5rem 1.25rem;border-radius:var(--r-pill);border:1px solid var(--slate-200);background:#fff;color:var(--slate-700);font-weight:700;cursor:pointer;transition:var(--t-fast);}
 .category-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-xs);}
 .category-btn.active{background:var(--ink-2);color:#fff;border-color:transparent;}
-
 .products-grid{--col-min:280px;display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--col-min),1fr));gap:1.4rem;perspective:1200px;}
 .product-card{position:relative;border-radius:var(--r-card);overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.94));border:1px solid rgba(15,23,42,.06);box-shadow:var(--shadow-sm);transform:translateZ(0);transition:transform var(--t-slow),box-shadow var(--t-fast),border-color var(--t-fast);}
 .product-card:hover{transform:translateY(-8px) rotateX(1deg) rotateY(.6deg);box-shadow:var(--shadow-md);}
@@ -279,117 +260,212 @@
 .star-empty{color:#d1d5db;width:1rem;height:1rem;}
 
 /* =========================================================
-   PROFILE (Auto‑skin para tu Profile.tsx sin clases) 💛
-   - Convierte el contenedor que tenga <h2> y <input> en una “tarjeta de perfil”
-   - Embellece campos, botones y secciones (actualizar / password / eliminar)
+   PROFILE (auto‑skin para tu Profile.tsx sin clases)
 ========================================================= */
-/* Contenedor auto para perfil */
 .main-content > div:has(> h2):has(input),
 #root > div:has(> h2):has(input){
   max-width:64rem;margin:1rem auto;background:#fff;border:1px solid rgba(15,23,42,.06);
   border-radius:var(--r-xl);box-shadow:var(--shadow-sm);overflow:hidden;position:relative;
 }
-
-/* Banda superior elegante */
 .main-content > div:has(> h2):has(input)::before,
 #root > div:has(> h2):has(input)::before{
   content:"";display:block;height:120px;
   background:radial-gradient(900px 300px at 10% -20%,rgba(255,255,255,.12),transparent 55%),linear-gradient(135deg,var(--slate-900),#0f172a);
 }
-
-/* Header con avatar sintético (decorativo) y título */
 .main-content > div:has(> h2):has(input) > h2,
 #root > div:has(> h2):has(input) > h2{
-  margin:-84px 1.2rem .8rem 1.2rem; /* se superpone a la banda */
-  padding-left:114px; min-height:86px; display:flex; align-items:flex-end;
-  font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:-.01em;
-  position:relative;
+  margin:-84px 1.2rem .8rem 1.2rem;padding-left:114px;min-height:86px;display:flex;align-items:flex-end;
+  font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:-.01em;position:relative;
 }
 .main-content > div:has(> h2):has(input) > h2::before,
 #root > div:has(> h2):has(input) > h2::before{
-  /* Avatar anillado */
-  content:""; position:absolute; left:0; bottom:-6px; width:88px; height:88px; border-radius:50%;
-  background:linear-gradient(135deg,var(--gold-700),var(--gold-500));
-  box-shadow:0 12px 30px rgba(212,175,55,.35);
+  content:"";position:absolute;left:0;bottom:-6px;width:88px;height:88px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold-700),var(--gold-500));box-shadow:0 12px 30px rgba(212,175,55,.35);
 }
 .main-content > div:has(> h2):has(input) > h2::after,
 #root > div:has(> h2):has(input) > h2::after{
-  content:""; position:absolute; left:5px; bottom:-1px; width:78px; height:78px; border-radius:50%; background:#0b1220;
+  content:"";position:absolute;left:5px;bottom:-1px;width:78px;height:78px;border-radius:50%;background:#0b1220;
 }
-
-/* Mensajes (éxito/error) */
-.main-content > div:has(> h2):has(input) > p{
-  margin:0 1.2rem 1rem; padding:.65rem .9rem; border-radius:.7rem; font-size:.92rem;
-  background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe;
-}
-
-/* Sección de datos (div con label + input) */
+.main-content > div:has(> h2):has(input) > p{margin:0 1.2rem 1rem;padding:.65rem .9rem;border-radius:.7rem;font-size:.92rem;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;}
 .main-content > div:has(> h2):has(input) > div:has(> label):has(> input){
-  display:grid; grid-template-columns:160px 1fr; align-items:center; gap:.6rem;
-  margin:0 1.2rem .6rem; padding:.7rem .8rem; border:1px dashed rgba(15,23,42,.08); border-radius:.7rem; background:#fafafa;
+  display:grid;grid-template-columns:160px 1fr;align-items:center;gap:.6rem;margin:0 1.2rem .6rem;padding:.7rem .8rem;border:1px dashed rgba(15,23,42,.08);border-radius:.7rem;background:#fafafa;
 }
-.main-content > div:has(> h2):has(input) > div:has(> label):has(> input) > label{
-  color:var(--slate-600); font-weight:700;
-}
-.main-content > div:has(> h2):has(input) > div:has(> label):has(> input) > input{
-  width:100%; padding:.6rem .85rem; border:1px solid var(--slate-300); border-radius:.7rem; transition:.2s;
-}
-.main-content > div:has(> h2):has(input) > div:has(> label):has(> input) > input:focus{
-  outline:none; border-color:var(--gold-600); box-shadow:0 0 0 2px #f59e0b33;
-}
-
-/* Botón “Actualizar Perfil” (primer botón del contenedor) */
+.main-content > div:has(> h2):has(input) > div:has(> label):has(> input) > label{color:var(--slate-600);font-weight:700;}
+.main-content > div:has(> h2):has(input) > div:has(> label):has(> input) > input{width:100%;padding:.6rem .85rem;border:1px solid var(--slate-300);border-radius:.7rem;transition:.2s;}
+.main-content > div:has(> h2):has(input) > div:has(> label):has(> input) > input:focus{outline:none;border-color:var(--gold-600);box-shadow:0 0 0 2px #f59e0b33;}
 .main-content > div:has(> h2):has(input) > button:first-of-type{
-  margin: .4rem 1.2rem 1rem; display:inline-flex; align-items:center; gap:.5rem;
-  background:var(--gold-600); color:var(--ink-2); padding:.7rem 1.2rem; border-radius:12px; font-weight:900; border:none; cursor:pointer; transition:var(--t-fast);
+  margin:.4rem 1.2rem 1rem;display:inline-flex;align-items:center;gap:.5rem;background:var(--gold-600);color:var(--ink-2);padding:.7rem 1.2rem;border-radius:12px;font-weight:900;border:none;cursor:pointer;transition:var(--t-fast);
 }
-.main-content > div:has(> h2):has(input) > button:first-of-type:hover{ background:var(--gold-500); transform:translateY(-2px); box-shadow:var(--shadow-sm); }
-
-/* Subtítulo “Cambiar Contraseña” */
-.main-content > div:has(> h2):has(input) > h3{
-  margin: .8rem 1.2rem .4rem; font-weight:900; color:var(--ink-2);
-}
-
-/* Campos de password (dos inputs sueltos) */
+.main-content > div:has(> h2):has(input) > button:first-of-type:hover{background:var(--gold-500);transform:translateY(-2px);box-shadow:var(--shadow-sm);}
+.main-content > div:has(> h2):has(input) > h3{margin:.8rem 1.2rem .4rem;font-weight:900;color:var(--ink-2);}
 .main-content > div:has(> h2):has(input) > input[type="password"]{
-  display:block; width:calc(100% - 2.4rem); margin:.4rem 1.2rem; padding:.6rem .85rem;
-  border:1px solid var(--slate-300); border-radius:.7rem; transition:.2s;
+  display:block;width:calc(100% - 2.4rem);margin:.4rem 1.2rem;padding:.6rem .85rem;border:1px solid var(--slate-300);border-radius:.7rem;transition:.2s;
 }
-.main-content > div:has(> h2):has(input) > input[type="password"]:focus{
-  outline:none; border-color:var(--info); box-shadow:0 0 0 2px #3b82f633;
-}
-
-/* Botón “Cambiar Contraseña” (segundo botón del contenedor) */
+.main-content > div:has(> h2):has(input) > input[type="password"]:focus{outline:none;border-color:var(--info);box-shadow:0 0 0 2px #3b82f633;}
 .main-content > div:has(> h2):has(input) > button:nth-of-type(2){
-  margin:.4rem 1.2rem; display:inline-flex; align-items:center; gap:.5rem;
-  background:var(--info); color:#fff; padding:.7rem 1.2rem; border-radius:12px; font-weight:900; border:none; cursor:pointer; transition:var(--t-fast);
+  margin:.4rem 1.2rem;display:inline-flex;align-items:center;gap:.5rem;background:var(--info);color:#fff;padding:.7rem 1.2rem;border-radius:12px;font-weight:900;border:none;cursor:pointer;transition:var(--t-fast);
 }
-.main-content > div:has(> h2):has(input) > button:nth-of-type(2):hover{ background:var(--info-2); transform:translateY(-2px); }
-
-/* Botón “Eliminar Cuenta” (último botón) */
+.main-content > div:has(> h2):has(input) > button:nth-of-type(2):hover{background:var(--info-2);transform:translateY(-2px);}
 .main-content > div:has(> h2):has(input) > button:last-of-type{
-  margin: .4rem 1.2rem 1.4rem; display:inline-flex; align-items:center; gap:.5rem;
-  background:var(--danger); color:#fff; padding:.7rem 1.2rem; border-radius:12px; font-weight:900; border:none; cursor:pointer; transition:var(--t-fast);
+  margin:.4rem 1.2rem 1.4rem;display:inline-flex;align-items:center;gap:.5rem;background:var(--danger);color:#fff;padding:.7rem 1.2rem;border-radius:12px;font-weight:900;border:none;cursor:pointer;transition:var(--t-fast);
 }
-.main-content > div:has(> h2):has(input) > button:last-of-type:hover{ background:var(--danger-2); transform:translateY(-2px); }
-
-/* Pie decorativo de la tarjeta de perfil */
+.main-content > div:has(> h2):has(input) > button:last-of-type:hover{background:var(--danger-2);transform:translateY(-2px);}
 .main-content > div:has(> h2):has(input)::after,
 #root > div:has(> h2):has(input)::after{
-  content:""; display:block; height:14px; margin: 0 1.2rem 1.2rem; border-radius:999px;
-  background:linear-gradient(135deg,var(--gold-700),var(--gold-500));
-  box-shadow:0 6px 16px rgba(212,175,55,.22);
+  content:"";display:block;height:14px;margin:0 1.2rem 1.2rem;border-radius:999px;background:linear-gradient(135deg,var(--gold-700),var(--gold-500));box-shadow:0 6px 16px rgba(212,175,55,.22);
 }
 
 /* =========================================================
-   BOOK / RESERVAS (compact)
+   BOOK / RESERVAS — DISEÑO HERMOSO
 ========================================================= */
-.book-container{max-width:64rem;margin:auto;padding:1.6rem;display:flex;flex-direction:column;gap:1.2rem;}
-.confirmation-card{background:#fff;border:1px solid rgba(15,23,42,.06);border-radius:18px;padding:2rem;text-align:center;box-shadow:var(--shadow-sm);}
-.progress-bar{display:flex;align-items:center;gap:.8rem;background:#fff;border:1px solid rgba(15,23,42,.06);padding:.8rem;border-radius:14px;box-shadow:var(--shadow-sm);}
-.step{display:flex;flex-direction:column;align-items:center;flex:1;}
-.step-circle{width:2.25rem;height:2.25rem;border-radius:50%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-weight:900;color:#475569;}
-.step-circle.active{background:var(--gold-600);color:var(--ink-2);}
+/* Hero de reservas (opcional si agregas un encabezado) */
+.book-hero{
+  border-radius:var(--r-xl); overflow:hidden; color:#e5e7eb; padding:2rem;
+  background: radial-gradient(900px 300px at 50% -10%, rgba(255,255,255,.08), transparent 55%),
+              linear-gradient(135deg, var(--slate-900), #0f172a);
+  box-shadow: var(--shadow-md); margin-bottom:1rem;
+}
+
+/* Contenedor principal con dos columnas: pasos + resumen */
+.book-container{
+  display:grid; grid-template-columns: 1.2fr .8fr; gap:1rem;
+  max-width:1120px; margin:0 auto; padding: .25rem;
+}
+@media (max-width: 960px){
+  .book-container{ grid-template-columns: 1fr; }
+}
+
+/* Shell de contenido (lado izquierdo) */
+.book-shell{
+  background:#fff; border:1px solid rgba(15,23,42,.06); border-radius:var(--r-xl);
+  box-shadow: var(--shadow-sm); padding: 1rem 1rem 1.25rem;
+}
+
+/* Barra de progreso con pasos */
+.progress-bar{
+  display:flex; align-items:center; gap:.75rem; margin-bottom:1rem;
+}
+.step{
+  display:flex; align-items:center; gap:.5rem; position:relative; flex:1;
+}
+.step-circle{
+  width:2.2rem; height:2.2rem; border-radius:50%;
+  background:#e5e7eb; color:#475569; display:grid; place-items:center; font-weight:900;
+  border:1px solid #cbd5e1;
+}
+.step-label{ color:var(--slate-600); font-size:.86rem; font-weight:700; }
+.step-line{
+  height:.25rem; flex:1; background:#e5e7eb; border-radius:999px;
+}
+
+/* Estados del paso */
+.step.is-done .step-circle{ background:var(--gold-600); color:var(--ink-2); border-color:transparent; }
+.step.is-done + .step .step-line{ background:var(--gold-600); }
+.step.is-current .step-circle{ background:#111827; color:#fff; border-color:#111827; }
+.step.is-current .step-label{ color:#111827; }
+
+/* Bloques de selección */
+.step-content{ display:grid; gap:1rem; }
+
+/* Controles de formulario */
+.control{ display:grid; gap:.35rem; }
+.control label{ font-weight:800; color:var(--ink-2); font-size:.95rem; }
+.control input[type="date"],
+.control input[type="time"],
+.control select{
+  width:100%; padding:.7rem .9rem; border:1px solid var(--slate-300); border-radius:.75rem;
+  background:#fff; transition: .2s;
+}
+.control input:focus, .control select:focus{
+  outline:none; border-color:var(--gold-600); box-shadow:0 0 0 2px #f59e0b33;
+}
+
+/* Grelas de opciones (servicios/barberos) */
+.choices-grid{
+  --col-min: 230px;
+  display:grid; grid-template-columns: repeat(auto-fit, minmax(var(--col-min), 1fr)); gap:.9rem;
+}
+.choice-card{
+  position:relative; overflow:hidden; border-radius:14px; background:#fff;
+  border:1px solid rgba(15,23,42,.06); box-shadow:var(--shadow-xxs);
+  transition: transform var(--t-mid), box-shadow var(--t-fast), border-color var(--t-fast);
+  display:grid; grid-template-columns: 72px 1fr; gap:.75rem; padding:.75rem;
+}
+.choice-card:hover{ transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+.choice-card img{ width:72px; height:72px; border-radius:10px; object-fit:cover; }
+.choice-title{ font-weight:900; color:var(--ink-2); }
+.choice-meta{ font-size:.85rem; color:var(--slate-600); }
+.choice-price{ font-weight:900; color:var(--ink-2); }
+
+.choice-card.selected{
+  border-color: var(--gold-600);
+  box-shadow: 0 12px 22px rgba(245,158,11,.18);
+}
+.choice-card.disabled{ opacity:.55; filter:grayscale(.3); pointer-events:none; }
+
+/* Horarios (chips) */
+.time-grid{
+  display:flex; flex-wrap:wrap; gap:.5rem;
+}
+.slot{
+  padding:.5rem .8rem; border-radius:10px; border:1px solid var(--slate-300); background:#fff;
+  font-weight:700; color:var(--slate-700); cursor:pointer; transition: var(--t-fast);
+}
+.slot:hover{ transform: translateY(-2px); box-shadow: var(--shadow-xs); }
+.slot.selected{ border-color: var(--gold-600); background:#fffbeb; color:var(--ink-2); }
+.slot:disabled{ opacity:.4; cursor:not-allowed; }
+
+/* Sección de confirmación (banners informativos) */
+.notice{
+  padding:.75rem 1rem; border-radius:.8rem;
+  background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; font-weight:700; font-size:.9rem;
+}
+
+/* Resumen (lado derecho) */
+.book-summary{
+  position:relative;
+  background:#fff; border:1px solid rgba(15,23,42,.06); border-radius:var(--r-xl);
+  box-shadow: var(--shadow-sm); padding: 1rem 1rem 1.25rem; height:fit-content;
+}
+.summary-title{ font-weight:900; color:var(--ink-2); margin-bottom:.75rem; }
+.summary-row{
+  display:flex; justify-content:space-between; align-items:center; padding:.55rem 0;
+  border-bottom:1px dashed #e5e7eb; color:var(--slate-700); font-size:.95rem;
+}
+.summary-row:last-child{ border-bottom:none; }
+.price-total{
+  display:flex; justify-content:space-between; align-items:center; margin-top:.6rem; padding-top:.6rem;
+  border-top:1px solid #e5e7eb; font-weight:900; color:var(--ink-2); font-size:1.1rem;
+}
+
+/* Footer de acciones pegajoso (dentro del panel izquierdo) */
+.sticky-book-footer{
+  position:sticky; bottom:0; margin-top:1rem; padding:.75rem;
+  background: linear-gradient(180deg, rgba(248,250,252,.85), rgba(248,250,252,1));
+  backdrop-filter: blur(6px); border:1px solid rgba(15,23,42,.06);
+  border-radius:14px; display:flex; gap:.6rem; justify-content:space-between; align-items:center;
+}
+.btn-back{
+  padding:.7rem 1.1rem; border-radius:12px; border:1px solid var(--slate-300); background:#fff; color:var(--slate-700);
+  font-weight:800; cursor:pointer; transition: var(--t-fast);
+}
+.btn-back:hover{ background:#f9fafb; transform: translateY(-2px); }
+
+.btn-confirm{
+  display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.2rem; border-radius:12px; border:none;
+  background: linear-gradient(135deg, var(--gold-700), var(--gold-500)); color: var(--ink-2);
+  font-weight:900; cursor:pointer; box-shadow: 0 12px 22px rgba(245,158,11,.22); transition: var(--t-fast);
+}
+.btn-confirm:hover{ transform: translateY(-2px); box-shadow: 0 18px 36px rgba(245,158,11,.30); }
+
+/* Tarjeta de confirmación final (si la usas) */
+.confirmation-card{
+  background:#fff; border:1px solid rgba(15,23,42,.06); border-radius:18px; padding:2rem; text-align:center; box-shadow: var(--shadow-sm);
+}
+.confirmation-icon{
+  width:4.8rem; height:4.8rem; border-radius:50%; background:#d1fae5;
+  display:grid; place-items:center; margin:0 auto 1rem; color:#065f46;
+}
 
 /* =========================================================
    BARBER PANEL
@@ -435,7 +511,7 @@ th{font-size:.75rem;text-transform:uppercase;color:var(--slate-600);}
 tr:hover{background:#f9fafb;}
 
 /* =========================================================
-   AUTO‑CARDS (fallback) para listas simples (h1 + divs)
+   AUTO‑CARDS (fallback) para listas sencillas (h1 + divs)
 ========================================================= */
 .main-content > div:has(> h1 + div), #root > div:has(> h1 + div){
   display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;align-items:stretch;
@@ -459,14 +535,11 @@ tr:hover{background:#f9fafb;}
   transform:translateY(-6px) rotateX(.6deg);box-shadow:var(--shadow-md);border-color:rgba(15,23,42,.1);
 }
 .main-content > div:has(> h1 + div) > div > p:first-child,
-#root > div:has(> h1 + div) > div > p:first-child{
-  font-weight:900;color:var(--ink-2);font-size:1.05rem;margin:0 0 .35rem;letter-spacing:.01em;
-}
+#root > div:has(> h1 + div) > div > p:first-child{font-weight:900;color:var(--ink-2);font-size:1.05rem;margin:0 0 .35rem;letter-spacing:.01em;}
 .main-content > div:has(> h1 + div) > div > p:nth-child(2),
 #root > div:has(> h1 + div) > div > p:nth-child(2){
   font-weight:900;font-size:1.1rem;margin:.25rem 0 0;
-  background:linear-gradient(135deg,var(--gold-700),var(--gold-500));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
+  background:linear-gradient(135deg,var(--gold-700),var(--gold-500));-webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .main-content > div:has(> h1 + div) > div > p:nth-child(n+3),
 #root > div:has(> h1 + div) > div > p:nth-child(n+3){color:var(--slate-600);font-size:.92rem;margin:.25rem 0 0;}
