@@ -11,6 +11,7 @@ import { Book } from './pages/Book';
 import { BarberPanel } from './pages/BarberPanel';
 import { Admin } from './pages/Admin';
 
+
 // Protected Route component
 const ProtectedRoute = ({ children, requiredRole }: { children: React.ReactNode; requiredRole?: 'client' | 'barber' | 'admin' }) => {
   const { user } = useAuth();
