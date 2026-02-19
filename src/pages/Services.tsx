@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { apiService } from '../services/api';
 import { Service } from '../types';
-import  "./index.css";
+
 export const Services: React.FC = () => {
   const [services, setServices] = useState<Service[]>([]);
 

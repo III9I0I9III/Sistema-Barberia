@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Scissors, Sparkles, Star, Clock } from 'lucide-react';
-import "./index.css";
+
 
 const MOCK_SERVICES = [
   {

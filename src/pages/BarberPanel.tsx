@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { apiService } from '../services/api';
 import { Booking } from '../types';
-import  "./index.css";
+
 export const BarberPanel: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
 
