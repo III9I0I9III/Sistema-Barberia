@@ -46,8 +46,8 @@
   --shadow-lg: 0 28px 70px rgba(2,6,23,.28);
 
   /* Glass */
-  --glass-bg:rgba(57, 115, 51, 0.962);
-  --glass-br:rgb(96, 23, 23);
+  --glass-bg:rgba(255,255,255,.08);
+  --glass-br:rgba(255,255,255,.22);
 
   /* Radios & timing */
   --r-card:16px;
