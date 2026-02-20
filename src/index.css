@@ -1,31 +1,33 @@
 ﻿/* =========================================================
    Tailwind v4 — Entrada única (SIN @source)
+   Archivo: src/index.css
 ========================================================= */
 @import "tailwindcss";
 
 /* =========================================================
-   TOKENS — Corporate Blue (Deep Navy + Royal Blue + Cyan)
+   TOKENS — Corporate Electric (Onyx + Sapphire + Electric Blue + Cyan)
 ========================================================= */
 :root{
   /* Base */
-  --ink:#0e1628;             /* texto principal en layouts claros */
+  --ink:#0e1628;             /* texto sobre fondos claros */
   --ink-2:#0a1428;           /* base midnight */
-  --bg-app:#0a1428;          /* fondo app (se mezcla con body) */
+  --bg-app:#0a1428;          /* fondo global oscuro */
 
-  /* Slate (texto secundarios / bordes) */
+  /* Escala slate (borders, textos secundarios) */
   --slate-900:#0a1428; --slate-800:#0f1b33; --slate-700:#172342;
   --slate-600:#2c3c5c; --slate-500:#445678; --slate-400:#8da1c1;
   --slate-300:#c7d2e7; --slate-200:#e2e8f0;
 
-  /* Brand (Royal Blue) + Accent (Cyan) */
-  --brand-700:#1d4ed8; /* royal-700 */
-  --brand-600:#2563eb; /* royal-600 */
-  --brand-500:#3b82f6; /* royal-500 */
-  --accent-700:#0ea5e9;/* sky-500 */
-  --accent-600:#06b6d4;/* cyan-500 */
-  --accent-500:#22d3ee;/* cyan-400 */
+  /* Brand (Royal/Electric) + Accent (Cyan) */
+  --brand-800:#173ea5;
+  --brand-700:#1d4ed8;
+  --brand-600:#2563eb;
+  --brand-500:#3b82f6;
+  --accent-700:#0ea5e9;
+  --accent-600:#06b6d4;
+  --accent-500:#22d3ee;
 
-  /* Alias “gold” (compat con tu JSX) */
+  /* Alias “gold” para compatibilidad previa */
   --gold-700: var(--brand-600);
   --gold-600: var(--accent-600);
   --gold-500: var(--accent-500);
@@ -53,21 +55,22 @@
   --t-mid:.28s var(--ease-snap);
   --t-slow:.5s cubic-bezier(.16,.84,.26,.98);
 
-  /* Gradientes */
+  /* Gradientes principales */
   --grad-brand:linear-gradient(135deg,var(--brand-600),var(--accent-600));
-  --grad-electric:linear-gradient(135deg,#1d4ed8,#2563eb,#06b6d4);
+  --grad-electric:linear-gradient(135deg,#173ea5,#2563eb,#06b6d4);
+  --grad-deep:linear-gradient(180deg,#0a1428 0%, #0f1b33 60%, #0a1428 100%);
 }
 
 /* =========================================================
-   BODY — Fondo profesional y limpio
+   BODY — Fondo profesional “mesh” sobrio
 ========================================================= */
 html,body{height:100%}
 body{
   margin:0; color:#eaf0ff;
   background:
-    radial-gradient(1400px 900px at -15% -10%, rgba(29,78,216,.18), transparent 60%),
+    radial-gradient(1200px 800px at -10% -20%, rgba(29,78,216,.18), transparent 60%),
     radial-gradient(1200px 800px at 110% 0%, rgba(6,182,212,.16), transparent 60%),
-    linear-gradient(180deg,#0a1428 0%, #0e1a34 60%, #0a1428 100%);
+    var(--grad-deep);
   background-attachment: fixed, fixed, fixed;
   -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
 }
@@ -179,7 +182,7 @@ a,button{ transition: transform var(--t-fast), box-shadow var(--t-fast), filter 
   box-shadow:var(--shadow-lg);
 }
 .hero::before, .hero::after{
-  content:""; position:absolute; border-radius:50%; filter:blur(60px); opacity:.40; pointer-events:none;
+  content:""; position:absolute; border-radius:50%; filter:blur(60px); opacity:.38; pointer-events:none;
   animation: floatY 9s ease-in-out infinite;
 }
 .hero::before{
@@ -304,7 +307,7 @@ a,button{ transition: transform var(--t-fast), box-shadow var(--t-fast), filter 
 .barber-info .rating span{ color:var(--slate-600); font-size:.88rem; margin-left:.25rem; }
 
 /* =========================================================
-   PROFILE — hero midnight + avatar anillado
+   PROFILE — hero midnight + avatar anillado (auto‑skin sin clases)
 ========================================================= */
 .main-content > div:has(> h2):has(input),
 #root > div:has(> h2):has(input){
@@ -528,31 +531,3 @@ tr:hover{ background:#f6f8fb; }
 .main-content > div:has(> h1) > div > button:hover,
 .main-content > div:has(> h1) > p > button:hover,
 .main-content > div:has(> h1 + ul) > ul > li > button:hover{ transform:translateY(-2px); }
-
-/* =========================================================
-   AUTH — Login / Register (glass, centrado, entrada suave)
-========================================================= */
-.main-content:has(> form),
-.main-content:has(> div > form),
-#root > div:has(> form){
-  min-height:calc(100vh - 120px); display:grid; place-items:center; padding:clamp(1rem,3vw,2rem);
-  background:radial-gradient(900px 300px at 50% -10%, rgba(255,255,255,.08), transparent 55%), linear-gradient(135deg, #0f1b33, #0a1428);
-}
-.main-content > form, .main-content > div > form, #root > div > form{
-  width:100%; max-width:28rem; background:rgba(255,255,255,.96);
-  border:1px solid rgba(255,255,255,.4); border-radius:18px; box-shadow:var(--shadow-md); backdrop-filter:blur(10px);
-  padding:clamp(1rem,2vw,1.35rem); animation: fadeUp .5s var(--ease-snap) both;
-}
-.main-content > form > h2, .main-content > div > form > h2, #root > div > form > h2{
-  margin:0 0 .8rem; font-size:1.45rem; font-weight:900; color:#172034; text-align:center; letter-spacing:-.01em;
-}
-.main-content > form input, .main-content > div > form input, #root > div > form input{
-  width:100%; margin:.55rem 0; padding:.75rem .9rem; border:1px solid var(--slate-300); border-radius:.75rem; transition:.2s; font-size:.95rem;
-}
-.main-content > form input:focus, .main-content > div > form input:focus, #root > div > form input:focus{
-  outline:none; border-color:var(--accent-600); box-shadow:0 0 0 2px #06b6d433;
-}
-.main-content > form button[type="submit"], .main-content > div > form button[type="submit"], #root > div > form button[type="submit"]{
-  width:100%; margin-top:.8rem; padding:.8rem 1rem; border:none; border-radius:.8rem;
-  background:var(--grad-electric); color:#0b1220; font-weight:900; cursor:pointer; box-shadow:0 10px 22px rgba(37,99,235,.22);
-}
