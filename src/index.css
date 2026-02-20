@@ -226,7 +226,6 @@ a,button{ transition: transform var(--t-fast), box-shadow var(--t-fast), filter 
   content:""; position:absolute; inset:-1px; z-index:0; border-radius:inherit; padding:1px;
   background: linear-gradient(120deg,var(--brand-600),var(--accent-600),var(--brand-600));
   -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite:xor; mask-composite:exclude;
   background-size:200% 200%; animation:gradShift 10s linear infinite; opacity:.0; transition:opacity var(--t-fast);
 }
