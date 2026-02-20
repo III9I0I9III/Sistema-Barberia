@@ -1,10 +1,10 @@
-/* =========================================================
-   Tailwind v4 — Entrada única (SIN @source)
+﻿/* =========================================================
+   Tailwind v4 â€” Entrada Ãºnica (SIN @source)
 ========================================================= */
 @import "tailwindcss";
 
 /* =========================================================
-   TOKENS — Paleta Pro (Indigo/Violet + Cyan) + radios/sombras
+   TOKENS â€” Paleta Pro (Indigo/Violet + Cyan) + radios/sombras
 ========================================================= */
 :root{
   /* Base */
@@ -64,7 +64,7 @@
   *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
 }
 
-/* Helpers / Tipografía */
+/* Helpers / TipografÃ­a */
 .icon{width:1.25rem;height:1.25rem;}
 .icon-small{width:1rem;height:1rem;}
 .icon-medium{width:1.5rem;height:1.5rem;}
@@ -73,7 +73,7 @@
 ::placeholder{color:var(--slate-400);}
 @keyframes glowPulse{0%{filter:brightness(1)}50%{filter:brightness(1.06)}100%{filter:brightness(1)}}
 
-/* Encabezado genérico de secciones */
+/* Encabezado genÃ©rico de secciones */
 .section-header{text-align:center;margin:clamp(.9rem,2vw,1.2rem) 0 clamp(1rem,2vw,1.6rem);}
 .section-header h2{
   font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;letter-spacing:-.02em;
@@ -169,7 +169,7 @@
 .hero-buttons{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;}
 
 /* =========================================================
-   BOTONES (brand→accent)
+   BOTONES (brandâ†’accent)
 ========================================================= */
 .btn-primary{
   display:inline-flex;align-items:center;gap:.5rem;padding:.9rem 1.8rem;border-radius:var(--r-pill);font-weight:900;text-decoration:none;
@@ -209,7 +209,7 @@
 @supports(backdrop-filter:blur(10px)){.card-3d.is-glass{background:var(--glass-bg);border:1px solid var(--glass-br);backdrop-filter:blur(10px);}}
 
 /* =========================================================
-   SERVICES — Página y Home
+   SERVICES â€” PÃ¡gina y Home
 ========================================================= */
 .services .section-header,.services-header{ text-align:center;margin-bottom:1.6rem;}
 .services .section-header h2,.services-header h1{ font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:900;}
@@ -231,7 +231,7 @@
 .btn-service:hover{background:var(--accent-600);color:#0b1220;}
 
 /* =========================================================
-   PRODUCTS — Cards 3D
+   PRODUCTS â€” Cards 3D
 ========================================================= */
 .products-header{text-align:center;margin-bottom:1.5rem;}
 .products-header h1{font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:900;color:var(--ink);}
@@ -294,7 +294,7 @@
 .star-empty{color:#d1d5db;width:1rem;height:1rem;}
 
 /* =========================================================
-   PROFILE (auto‑skin sin clases)
+   PROFILE (autoâ€‘skin sin clases)
 ========================================================= */
 .main-content > div:has(> h2):has(input),
 #root > div:has(> h2):has(input){
@@ -343,7 +343,7 @@
 }
 
 /* =========================================================
-   BOOK / RESERVAS — Panel completo + Auto‑skin simple
+   BOOK / RESERVAS â€” Panel completo + Autoâ€‘skin simple
 ========================================================= */
 .book-hero{
   border-radius:var(--r-xl);overflow:hidden;color:#e5e7eb;padding:clamp(1.2rem,2.5vw,2rem);
@@ -408,7 +408,7 @@
 .btn-confirm:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(124,58,237,.30);}
 
 /* =========================================================
-   *** AUTO‑SKIN para tu Book.tsx simple (h1 + 2 selects + date + time + botón)
+   *** AUTOâ€‘SKIN para tu Book.tsx simple (h1 + 2 selects + date + time + botÃ³n)
 ========================================================= */
 .main-content > div:has(> h1):has(> select):has(> input[type="date"]):has(> input[type="time"]):has(> button),
 #root > div:has(> h1):has(> select):has(> input[type="date"]):has(> input[type="time"]):has(> button){
@@ -469,7 +469,7 @@
 }
 
 /* =========================================================
-   ADMIN / BARBER — tabs y tablas
+   ADMIN / BARBER â€” tabs y tablas
 ========================================================= */
 .admin-panel,.barber-panel{max-width:min(72rem,94vw);margin:auto;display:flex;flex-direction:column;gap:1.1rem;}
 .panel-header{display:flex;align-items:center;gap:.8rem;color:#e6e9ef;background:linear-gradient(135deg,#101826,#182235);padding:1.2rem;border-radius:16px;box-shadow:var(--shadow-sm);}
@@ -490,8 +490,8 @@ th{font-size:.75rem;text-transform:uppercase;color:#66748c;}
 tr:hover{background:#f6f8fb;}
 
 /* =========================================================
-   *** AUTO‑CARDS para páginas sin clases (Servicios/Productos)
-   Soporta tres estructuras: <div>…<p>…</p>…, <div>…<div/>…</div>, <ul><li/>…</ul>
+   *** AUTOâ€‘CARDS para pÃ¡ginas sin clases (Servicios/Productos)
+   Soporta tres estructuras: <div>â€¦<p>â€¦</p>â€¦, <div>â€¦<div/>â€¦</div>, <ul><li/>â€¦</ul>
 ========================================================= */
 
 /* 1) Contenedor se vuelve grid si tras el H1 hay p, div o ul */
@@ -508,14 +508,14 @@ tr:hover{background:#f6f8fb;}
   .main-content > div:has(> h1) { grid-template-columns: repeat( auto-fit, minmax(260px, 1fr) ); }
 }
 
-/* 3) Cada <p> inmediato tras h1 se convierte en “card” */
+/* 3) Cada <p> inmediato tras h1 se convierte en â€œcardâ€ */
 .main-content > div:has(> h1) > p{
   background:#fff;border:1px solid rgba(15,23,42,.06);border-radius:var(--r-card);box-shadow:var(--shadow-xs);
   padding:1rem;transition:transform var(--t-slow),box-shadow var(--t-fast),border-color var(--t-fast);
 }
 .main-content > div:has(> h1) > p:hover{transform:translateY(-6px) rotateX(.6deg);box-shadow:var(--shadow-md);border-color:rgba(15,23,42,.1);}
 
-/* 4) Cada <div> item tras h1 también en “card” */
+/* 4) Cada <div> item tras h1 tambiÃ©n en â€œcardâ€ */
 .main-content > div:has(> h1) > h1 + div,
 .main-content > div:has(> h1) > h1 + div ~ div{
   background:#fff;border:1px solid rgba(15,23,42,.06);border-radius:var(--r-card);box-shadow:var(--shadow-xs);
@@ -524,7 +524,7 @@ tr:hover{background:#f6f8fb;}
 .main-content > div:has(> h1) > h1 + div:hover,
 .main-content > div:has(> h1) > h1 + div ~ div:hover{transform:translateY(-6px) rotateX(.6deg);box-shadow:var(--shadow-md);border-color:rgba(15,23,42,.1);}
 
-/* Si dentro de cada div hay <p> título + precio */
+/* Si dentro de cada div hay <p> tÃ­tulo + precio */
 .main-content > div:has(> h1) > div > p:first-child{
   font-weight:900;color:var(--ink);font-size:1.05rem;margin:0 0 .35rem;letter-spacing:.01em;
 }
@@ -534,7 +534,7 @@ tr:hover{background:#f6f8fb;}
 }
 .main-content > div:has(> h1) > div > p:nth-child(n+3){color:var(--slate-600);font-size:.92rem;margin:.25rem 0 0;}
 
-/* 5) Listas <ul><li/>…: cada li como card */
+/* 5) Listas <ul><li/>â€¦: cada li como card */
 .main-content > div:has(> h1 + ul) > ul{
   list-style:none;padding:0;margin:0;
   display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;
@@ -547,7 +547,7 @@ tr:hover{background:#f6f8fb;}
   transform:translateY(-6px) rotateX(.6deg);box-shadow:var(--shadow-md);border-color:rgba(15,23,42,.1);
 }
 
-/* 6) Botón opcional dentro de un item */
+/* 6) BotÃ³n opcional dentro de un item */
 .main-content > div:has(> h1) > div > button,
 .main-content > div:has(> h1) > p > button,
 .main-content > div:has(> h1 + ul) > ul > li > button{
@@ -559,7 +559,7 @@ tr:hover{background:#f6f8fb;}
 .main-content > div:has(> h1 + ul) > ul > li > button:hover{transform:translateY(-2px);}
 
 /* =========================================================
-   AUTH — Login & Register centrados y elegantes (auto‑skin)
+   AUTH â€” Login & Register centrados y elegantes (autoâ€‘skin)
 ========================================================= */
 .main-content:has(> form),
 .main-content:has(> div > form),
