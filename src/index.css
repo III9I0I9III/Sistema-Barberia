@@ -1,10 +1,10 @@
-ï»¿@import "tailwindcss";
+@import "tailwindcss";
 
-/* nada mÃ¡s en la cabecera */
+/* nada más en la cabecera */
 
 /* =========================================================
    TOKENS (colores, sombras, radios, timing)
-   â€” Nueva paleta: Indigo/Violeta + Cyan (con â€œmidnightâ€)
+   — Nueva paleta: Indigo/Violeta + Cyan (con “midnight”)
 ========================================================= */
 :root{
   /* Base / Textos */
@@ -30,7 +30,7 @@
   --accent-600:#06b6d4;  /* cyan-500 */
   --accent-500:#22d3ee;  /* cyan-400 */
 
-  /* Compat (mantengo las variables â€œgoldâ€ usadas en tu JSX) */
+  /* Compat (mantengo las variables “gold” usadas en tu JSX) */
   --gold-700: var(--accent-700);
   --gold-600: var(--accent-600);
   --gold-500: var(--accent-500);
@@ -67,7 +67,7 @@
 }
 
 /* =========================================================
-   HELPERS / TIPOGRAFÃA
+   HELPERS / TIPOGRAFÍA
 ========================================================= */
 .icon{width:1.25rem;height:1.25rem;}
 .icon-small{width:1rem;height:1rem;}
@@ -77,7 +77,7 @@
 ::placeholder{color:var(--slate-400);}
 @keyframes glowPulse{0%{filter:brightness(1)}50%{filter:brightness(1.06)}100%{filter:brightness(1)}}
 
-/* Encabezado de secciones (p.ej. â€œNuestros Barberosâ€) */
+/* Encabezado de secciones (p.ej. “Nuestros Barberos”) */
 .section-header{ text-align:center; margin:1.1rem 0 1.6rem; }
 .section-header h2{
   font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; letter-spacing:-.02em;
@@ -143,7 +143,7 @@
 .footer-bottom{border-top:1px solid rgba(255,255,255,.06);margin-top:1.2rem;padding-top:1.2rem;text-align:center;font-size:.9rem;}
 
 /* =========================================================
-   HOME + HERO (nueva gradiente brandâ†’accent)
+   HOME + HERO (nueva gradiente brand?accent)
 ========================================================= */
 .home{
   display:flex;flex-direction:column;gap:clamp(2rem,4vw,4rem);
@@ -175,7 +175,7 @@
 .hero-buttons{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;}
 
 /* =========================================================
-   BOTONES (brandâ†’accent)
+   BOTONES (brand?accent)
 ========================================================= */
 .btn-primary{
   display:inline-flex;align-items:center;gap:.5rem;padding:.9rem 1.8rem;border-radius:var(--r-pill);font-weight:900;text-decoration:none;
@@ -303,7 +303,7 @@
 .star-empty{color:#d1d5db;width:1rem;height:1rem;}
 
 /* =========================================================
-   PROFILE (autoâ€‘skin sin clases)
+   PROFILE (auto-skin sin clases)
 ========================================================= */
 .main-content > div:has(> h2):has(input),
 #root > div:has(> h2):has(input){
@@ -352,9 +352,9 @@
 }
 
 /* =========================================================
-   BOOK / RESERVAS â€” PANEL HERMOSO + AUTOâ€‘SKIN SIMPLE
+   BOOK / RESERVAS — PANEL HERMOSO + AUTO-SKIN SIMPLE
 ========================================================= */
-/* VersiÃ³n completa (si usas las clases) */
+/* Versión completa (si usas las clases) */
 .book-hero{
   border-radius:var(--r-xl); overflow:hidden; color:#e5e7eb; padding:clamp(1.2rem,2.5vw,2rem);
   background: radial-gradient(900px 300px at 50% -10%, rgba(255,255,255,.08), transparent 55%),
@@ -424,7 +424,7 @@
 }
 .btn-confirm:hover{ transform: translateY(-2px); box-shadow: 0 18px 36px rgba(124,58,237,.30); }
 
-/* AUTOâ€‘SKIN para tu Book.tsx simple (h1 + selects + date + time + botÃ³n) */
+/* AUTO-SKIN para tu Book.tsx simple (h1 + selects + date + time + botón) */
 .main-content > div:has(> h1):has(> select):has(> input[type="date"]):has(> input[type="time"]):has(> button),
 #root > div:has(> h1):has(> select):has(> input[type="date"]):has(> input[type="time"]):has(> button){
   background:#fff; border:1px solid rgba(15,23,42,.06); border-radius:var(--r-xl);
