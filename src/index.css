@@ -66,7 +66,7 @@
 ========================================================= */
 html,body{height:100%}
 body{
-  margin:0; color:#eaf0ff;
+  margin:0; color:#eaf0ff; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   background:
     radial-gradient(1200px 800px at -10% -20%, rgba(29,78,216,.18), transparent 60%),
     radial-gradient(1200px 800px at 110% 0%, rgba(6,182,212,.16), transparent 60%),
@@ -159,6 +159,7 @@ a,button{ transition: transform var(--t-fast), box-shadow var(--t-fast), filter 
 .register-btn:hover{ transform:translateY(-2px) scale(1.02); box-shadow:0 18px 36px rgba(37,99,235,.33); }
 .login-link{ color:#cbd5e1; text-decoration:none; padding:.5rem .85rem; border-radius:12px; }
 .login-link:hover{ background:rgba(255,255,255,.08); color:#fff; }
+
 .nav-mobile{ display:flex; overflow-x:auto; gap:.25rem; background:#0b1220; border-top:1px solid rgba(255,255,255,.06); padding:.4rem; }
 .mobile-link{ display:inline-flex; align-items:center; gap:.35rem; padding:.55rem .85rem; text-decoration:none; color:#94a3b8; white-space:nowrap; border-radius:12px; }
 .mobile-link:hover{ background:#111827; color:#fff; }
@@ -168,6 +169,12 @@ a,button{ transition: transform var(--t-fast), box-shadow var(--t-fast), filter 
 .footer{ background:linear-gradient(180deg,rgba(14,26,52,.94),rgba(14,26,52,.96)); color:#9ca3af; }
 .footer-container{ max-width:min(1120px,94vw); margin:auto; padding:clamp(1.2rem,2.6vw,2.2rem) clamp(.8rem,2vw,1rem); }
 .footer-bottom{ border-top:1px solid rgba(255,255,255,.08); margin-top:1.2rem; padding-top:1.2rem; text-align:center; font-size:.9rem; }
+
+/* Separadores / líneas de acento */
+.divider-line{
+  height:10px; border-radius:999px; background:var(--grad-electric);
+  box-shadow:0 10px 20px rgba(37,99,235,.28);
+}
 
 /* =========================================================
    HOME + HERO — blobs sobrios + parallax sutil
@@ -531,3 +538,31 @@ tr:hover{ background:#f6f8fb; }
 .main-content > div:has(> h1) > div > button:hover,
 .main-content > div:has(> h1) > p > button:hover,
 .main-content > div:has(> h1 + ul) > ul > li > button:hover{ transform:translateY(-2px); }
+
+/* =========================================================
+   AUTH — Login / Register (glass, centrado, entrada suave)
+========================================================= */
+.main-content:has(> form),
+.main-content:has(> div > form),
+#root > div:has(> form){
+  min-height:calc(100vh - 120px); display:grid; place-items:center; padding:clamp(1rem,3vw,2rem);
+  background:radial-gradient(900px 300px at 50% -10%, rgba(255,255,255,.08), transparent 55%), linear-gradient(135deg, #0f1b33, #0a1428);
+}
+.main-content > form, .main-content > div > form, #root > div > form{
+  width:100%; max-width:28rem; background:rgba(255,255,255,.96);
+  border:1px solid rgba(255,255,255,.4); border-radius:18px; box-shadow:var(--shadow-md); backdrop-filter:blur(10px);
+  padding:clamp(1rem,2vw,1.35rem); animation: fadeUp .5s var(--ease-snap) both;
+}
+.main-content > form > h2, .main-content > div > form > h2, #root > div > form > h2{
+  margin:0 0 .8rem; font-size:1.45rem; font-weight:900; color:#172034; text-align:center; letter-spacing:-.01em;
+}
+.main-content > form input, .main-content > div > form input, #root > div > form input{
+  width:100%; margin:.55rem 0; padding:.75rem .9rem; border:1px solid var(--slate-300); border-radius:.75rem; transition:.2s; font-size:.95rem;
+}
+.main-content > form input:focus, .main-content > div > form input:focus, #root > div > form input:focus{
+  outline:none; border-color:var(--accent-600); box-shadow:0 0 0 2px #06b6d433;
+}
+.main-content > form button[type="submit"], .main-content > div > form button[type="submit"], #root > div > form button[type="submit"]{
+  width:100%; margin-top:.8rem; padding:.8rem 1rem; border:none; border-radius:.8rem;
+  background:var(--grad-electric); color:#0b1220; font-weight:900; cursor:pointer; box-shadow:0 10px 22px rgba(37,99,235,.22);
+}
