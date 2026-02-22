@@ -73,6 +73,9 @@
 ::placeholder{color:var(--slate-400);}
 @keyframes glowPulse{0%{filter:brightness(1)}50%{filter:brightness(1.06)}100%{filter:brightness(1)}}
 
+/* Asegura imágenes fluidas (mejora de responsive) */
+img{max-width:100%;height:auto;vertical-align:middle}
+
 /* Encabezado genérico de secciones */
 .section-header{text-align:center;margin:clamp(.9rem,2vw,1.2rem) 0 clamp(1rem,2vw,1.6rem);}
 .section-header h2{
@@ -406,7 +409,7 @@
   font-weight:900;cursor:pointer;box-shadow:0 12px 22px rgba(124,58,237,.22);transition:var(--t-fast);
 }
 .btn-confirm:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(124,58,237,.30);}
-
+ 
 /* =========================================================
    *** AUTO‑SKIN para tu Book.tsx simple (h1 + 2 selects + date + time + botón)
 ========================================================= */
@@ -469,7 +472,7 @@
 }
 
 /* =========================================================
-   ADMIN / BARBER — tabs y tablas
+   ADMIN / BARBER — tabs y tablas (ORIGINAL)
 ========================================================= */
 .admin-panel,.barber-panel{max-width:min(72rem,94vw);margin:auto;display:flex;flex-direction:column;gap:1.1rem;}
 .panel-header{display:flex;align-items:center;gap:.8rem;color:#e6e9ef;background:linear-gradient(135deg,#101826,#182235);padding:1.2rem;border-radius:16px;box-shadow:var(--shadow-sm);}
@@ -491,31 +494,19 @@ tr:hover{background:#f6f8fb;}
 
 /* =========================================================
    *** AUTO‑CARDS para páginas sin clases (Servicios/Productos)
-   Soporta tres estructuras: <div>…<p>…</p>…, <div>…<div/>…</div>, <ul><li/>…</ul>
 ========================================================= */
-
-/* 1) Contenedor se vuelve grid si tras el H1 hay p, div o ul */
-.main-content > div:has(> h1) {
-  display:grid;
-  gap:1.2rem;
-}
+.main-content > div:has(> h1) { display:grid; gap:1.2rem; }
 .main-content > div:has(> h1) > h1{
   font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:900;color:var(--ink);margin:.2rem 0 .6rem;
 }
-
-/* 2) Grid en desktop para items sueltos */
 @media(min-width:640px){
   .main-content > div:has(> h1) { grid-template-columns: repeat( auto-fit, minmax(260px, 1fr) ); }
 }
-
-/* 3) Cada <p> inmediato tras h1 se convierte en “card” */
 .main-content > div:has(> h1) > p{
   background:#fff;border:1px solid rgba(15,23,42,.06);border-radius:var(--r-card);box-shadow:var(--shadow-xs);
   padding:1rem;transition:transform var(--t-slow),box-shadow var(--t-fast),border-color var(--t-fast);
 }
 .main-content > div:has(> h1) > p:hover{transform:translateY(-6px) rotateX(.6deg);box-shadow:var(--shadow-md);border-color:rgba(15,23,42,.1);}
-
-/* 4) Cada <div> item tras h1 también en “card” */
 .main-content > div:has(> h1) > h1 + div,
 .main-content > div:has(> h1) > h1 + div ~ div{
   background:#fff;border:1px solid rgba(15,23,42,.06);border-radius:var(--r-card);box-shadow:var(--shadow-xs);
@@ -523,8 +514,6 @@ tr:hover{background:#f6f8fb;}
 }
 .main-content > div:has(> h1) > h1 + div:hover,
 .main-content > div:has(> h1) > h1 + div ~ div:hover{transform:translateY(-6px) rotateX(.6deg);box-shadow:var(--shadow-md);border-color:rgba(15,23,42,.1);}
-
-/* Si dentro de cada div hay <p> título + precio */
 .main-content > div:has(> h1) > div > p:first-child{
   font-weight:900;color:var(--ink);font-size:1.05rem;margin:0 0 .35rem;letter-spacing:.01em;
 }
@@ -533,8 +522,6 @@ tr:hover{background:#f6f8fb;}
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .main-content > div:has(> h1) > div > p:nth-child(n+3){color:var(--slate-600);font-size:.92rem;margin:.25rem 0 0;}
-
-/* 5) Listas <ul><li/>…: cada li como card */
 .main-content > div:has(> h1 + ul) > ul{
   list-style:none;padding:0;margin:0;
   display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;
@@ -546,8 +533,6 @@ tr:hover{background:#f6f8fb;}
 .main-content > div:has(> h1 + ul) > ul > li:hover{
   transform:translateY(-6px) rotateX(.6deg);box-shadow:var(--shadow-md);border-color:rgba(15,23,42,.1);
 }
-
-/* 6) Botón opcional dentro de un item */
 .main-content > div:has(> h1) > div > button,
 .main-content > div:has(> h1) > p > button,
 .main-content > div:has(> h1 + ul) > ul > li > button{
@@ -588,4 +573,120 @@ tr:hover{background:#f6f8fb;}
 }
 .main-content > form button[type="submit"]:hover, .main-content > div > form button[type="submit"]:hover, #root > div > form button[type="submit"]:hover{
   transform:translateY(-2px);
+}
+
+/* =========================================================
+   ADMIN BONITO+ — Mejora visual del Panel de Admin (overrides suaves)
+   (No rompe tu diseño; solo embellece títulos, listas, stats y tablas)
+========================================================= */
+
+/* Contenedor y ambiente */
+.admin-panel{
+  gap:1.2rem;
+}
+
+/* Título de la página */
+.admin-panel h1{
+  color:transparent;
+  background:linear-gradient(180deg,#0f172a 0%,#233045 60%);
+  -webkit-background-clip:text;background-clip:text;
+  font-weight:900;letter-spacing:-.02em;
+  position:relative;margin-bottom:.4rem;
+}
+.admin-panel h1::after{
+  content:"";
+  display:block;height:6px;width:140px;margin:.5rem 0 0;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--brand-600),var(--accent-600));
+  box-shadow:0 8px 18px rgba(124,58,237,.25);
+}
+
+/* Tabs: realce del activo */
+.tabs-card{box-shadow:var(--shadow-xxs);}
+.tab-btn{font-weight:800}
+.tab-btn.active{
+  box-shadow:0 8px 20px rgba(124,58,237,.22), inset 0 0 0 1px rgba(11,18,32,.08);
+}
+
+/* Stats con barra lateral de color */
+.stat-card{
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:6px;border-radius:6px 0 0 6px;
+  background:linear-gradient(180deg,var(--brand-600),var(--accent-600));
+  opacity:.9;
+}
+
+/* Listas simples (como Servicios/Usuarios) en columnas bonitas */
+.admin-panel :is(ul,ol){
+  list-style:none;padding:0;margin:0;
+  display:grid;gap:.4rem;
+}
+@media(min-width:700px){
+  /* Si pones dos UL seguidos, se acomodan como columnas fluidas */
+  .admin-panel .lists,
+  .admin-panel > div:has(> ul:nth-of-type(2)){
+    display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  }
+}
+.admin-panel li{
+  display:flex;align-items:center;gap:.55rem;
+  padding:.55rem .75rem;border-radius:12px;
+  background:#fff;border:1px solid rgba(15,23,42,.06);
+  box-shadow:var(--shadow-xxs);
+  color:#253245;
+}
+.admin-panel li::before{
+  content:"";flex:0 0 8px;height:8px;border-radius:999px;
+  background:linear-gradient(135deg,var(--brand-600),var(--accent-600));
+  box-shadow:0 0 0 3px rgba(124,58,237,.15);
+}
+
+/* Tarjetas informativas “lite” (para bloques sueltos) */
+.admin-panel .lite-card{
+  background:#fff;border:1px solid rgba(15,23,42,.08);
+  border-radius:16px;padding:1rem;box-shadow:var(--shadow-xxs);
+}
+
+/* Tabla: cabecera sticky + zebra + estado visual */
+.table-card{overflow:auto}
+.table-card thead th{
+  position:sticky;top:0;z-index:1;background:#fff;
+  box-shadow:inset 0 -1px 0 #e5e7eb;
+}
+.table-card tbody tr:nth-child(even){background:#fafbff}
+.table-card tbody tr:hover{background:#f0f4ff}
+
+/* Badges utilitarias (puedes usarlas en celdas o listas) */
+.badge{
+  display:inline-block;padding:.25rem .55rem;border-radius:999px;
+  font-size:.75rem;font-weight:800;
+  background:#eef2ff;color:#233045;border:1px solid #dbe4ff;
+}
+.badge.ok{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
+.badge.warn{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+.badge.danger{background:#fee2e2;color:#991b1b;border-color:#fecaca}
+
+/* Barra de acciones opcional */
+.admin-actions{
+  display:flex;justify-content:space-between;align-items:center;gap:.8rem;
+  background:linear-gradient(180deg,rgba(246,247,251,.92),#f6f7fb);
+  border:1px solid rgba(15,23,42,.06);border-radius:14px;padding:.7rem .8rem;
+  box-shadow:var(--shadow-xxs);
+}
+
+/* Pie informativo estilo “banner” como el de tu screenshot */
+.info-banner{
+  border-radius:14px;padding:.75rem 1rem;color:#e6f0ff;
+  background:
+    linear-gradient(90deg,rgba(17,24,39,.9),rgba(17,24,39,.92)) padding-box,
+    linear-gradient(135deg,var(--brand-600),var(--accent-600)) border-box;
+  border:1px solid transparent;
+  box-shadow:0 10px 24px rgba(2,6,23,.18);
+}
+.info-banner .bar{
+  height:8px;border-radius:999px;margin-bottom:.7rem;
+  background:linear-gradient(90deg,var(--brand-600),var(--accent-600));
+  box-shadow:0 12px 24px rgba(124,58,237,.28);
 }
